@@ -1,0 +1,334 @@
+/* Hero Section */
+.hero-section {
+    position: relative;
+    height: 85vh;
+    min-height: 600px;
+    background-image: url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    align-items: center;
+    color: var(--white);
+    margin-top: -64px;
+    /* Pull behind navbar if navbar is transparent, otherwise 0 */
+    padding-top: 64px;
+}
+
+.hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.4));
+}
+
+.hero-content {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+}
+
+.hero-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+    max-width: 600px;
+}
+
+.hero-subtitle {
+    font-size: 1.125rem;
+    color: #E5E7EB;
+    margin-bottom: 3rem;
+    max-width: 500px;
+    line-height: 1.6;
+}
+
+/* Search Widget */
+.search-widget {
+    background: var(--white);
+    padding: 0.5rem;
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    max-width: 950px;
+    width: 100%;
+    margin-top: 2rem;
+    position: relative;
+    z-index: 20;
+}
+
+/* Search Widget Input Groups */
+.search-group {
+    flex: 1;
+    position: relative;
+    padding: 0 1rem;
+}
+
+.location-group {
+    flex: 1.5;
+}
+
+.input-wrapper {
+    display: flex;
+    align-items: center;
+    background-color: transparent;
+    padding: 0.5rem;
+    border-radius: var(--radius);
+    gap: 1rem;
+}
+
+.input-wrapper:focus-within {
+    box-shadow: none;
+    background-color: #F3F4F6;
+}
+
+.input-icon {
+    color: #9CA3AF;
+    flex-shrink: 0;
+}
+
+.input-content {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.input-content label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--dark-color);
+    margin-bottom: 0.1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.input-content input {
+    border: none;
+    outline: none;
+    width: 100%;
+    font-size: 0.95rem;
+    color: #4B5563;
+    background: transparent;
+    font-weight: 500;
+    padding: 0;
+}
+
+.input-content input::placeholder {
+    color: #9CA3AF;
+}
+
+/* Date Input Styling */
+input[type="date"]::-webkit-calendar-picker-indicator {
+    background: transparent;
+    bottom: 0;
+    color: transparent;
+    cursor: pointer;
+    height: auto;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: auto;
+}
+
+.date-input {
+    position: relative;
+}
+
+/* Location Suggestions Dropdown */
+.suggestions-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--white);
+    border-radius: 0 0 1rem 1rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    z-index: 50;
+    max-height: 250px;
+    overflow-y: auto;
+    border-top: 1px solid #E5E7EB;
+    list-style: none;
+    padding: 0.5rem 0;
+    margin-top: 1rem;
+}
+
+.suggestion-item {
+    padding: 0.75rem 1.5rem;
+    cursor: pointer;
+    font-size: 0.95rem;
+    color: #374151;
+    transition: background-color 0.1s;
+}
+
+.suggestion-item:hover {
+    background-color: #F0F9FF;
+    color: var(--primary-color);
+}
+
+.search-divider {
+    width: 1px;
+    height: 32px;
+    background-color: #E5E7EB;
+    margin: 0 0.5rem;
+}
+
+.btn-search {
+    background-color: var(--primary-color);
+    color: var(--white);
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s;
+    white-space: nowrap;
+    margin-left: 0.5rem;
+}
+
+.btn-search:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.5);
+}
+
+@media (max-width: 768px) {
+    .search-widget {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 1rem;
+        gap: 1rem;
+    }
+
+    .search-divider {
+        display: none;
+    }
+
+    .btn-search {
+        justify-content: center;
+        margin-left: 0;
+    }
+
+    .suggestions-list {
+        position: relative;
+        box-shadow: none;
+        border: 1px solid #E5E7EB;
+        border-radius: var(--radius);
+    }
+}
+
+/* Brands Section */
+.brands-section {
+    background-color: #F9FAFB;
+    padding: 3rem 0;
+    border-bottom: 1px solid #E5E7EB;
+}
+
+.brands-grid {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    flex-wrap: wrap;
+    opacity: 0.6;
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: #9CA3AF;
+}
+
+/* Features Section */
+.features-section {
+    padding: 6rem 0;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 4rem;
+}
+
+.feature-card {
+    background: var(--white);
+    padding: 2rem;
+    border-radius: var(--radius);
+    text-align: center;
+    transition: transform 0.3s;
+    border: 1px solid #F3F4F6;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow);
+    border-color: transparent;
+}
+
+.feature-icon-wrapper {
+    width: 64px;
+    height: 64px;
+    background-color: rgba(37, 99, 235, 0.1);
+    color: var(--primary-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+}
+
+.feature-card h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--dark-color);
+}
+
+.feature-card p {
+    color: var(--gray);
+    line-height: 1.6;
+}
+
+/* CTA Section */
+.cta-section {
+    background-color: var(--dark-color);
+    padding: 5rem 0;
+    color: var(--white);
+    text-align: center;
+}
+
+.cta-content h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.cta-content p {
+    color: #D1D5DB;
+    font-size: 1.125rem;
+    margin-bottom: 2rem;
+}
+
+/* Animations */
+.animate-fade-in-up {
+    animation: fadeInUp 0.8s ease-out forwards;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.delay-100 {
+    animation-delay: 0.1s;
+}
+
+.delay-200 {
+    animation-delay: 0.2s;
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

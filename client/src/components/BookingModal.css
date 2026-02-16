@@ -1,0 +1,130 @@
+.booking-modal {
+    max-width: 450px;
+    padding: 0;
+    /* overflow: hidden; Removed to allow datepicker to pop out */
+    position: relative;
+    /* Ensure absolute children are positioned relative to this */
+    border-radius: 1rem;
+}
+
+.booking-modal .modal-header {
+    padding: 1.5rem;
+    background-color: #F9FAFB;
+    border-bottom: 1px solid #E5E7EB;
+}
+
+.booking-modal h2 {
+    font-size: 1.5rem;
+    margin: 0;
+}
+
+.booking-form {
+    padding: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1.25rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+/* Style the custom date picker within the modal to look like an input */
+.booking-modal .custom-date-input-wrapper {
+    border: 1px solid #D1D5DB;
+    border-radius: 0.5rem;
+    padding: 0.625rem 0.875rem;
+    transition: all 0.2s;
+    background-color: white;
+}
+
+.booking-modal .custom-date-input-wrapper:hover {
+    border-color: #9CA3AF;
+}
+
+.booking-modal .custom-date-input-wrapper:focus-within {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.booking-modal .input-icon {
+    color: #6B7280;
+    margin-right: 0.5rem;
+}
+
+.booking-modal .close-btn {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.25rem;
+    background: white;
+    border: 1px solid #E5E7EB;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #6B7280;
+    z-index: 50;
+    transition: all 0.2s;
+    padding: 0;
+}
+
+.booking-modal .close-btn:hover {
+    background-color: #F3F4F6;
+    color: #EF4444;
+    border-color: #EF4444;
+}
+
+.price-summary {
+    background-color: #F3F4F6;
+    padding: 1rem;
+    border-radius: var(--radius);
+    margin-top: 1.5rem;
+}
+
+/* Payment Mock */
+.payment-mock {
+    padding: 1.5rem;
+}
+
+.credit-card-mock {
+    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+    color: white;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    position: relative;
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3);
+}
+
+.card-chip {
+    width: 40px;
+    height: 30px;
+    background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+    border-radius: 4px;
+}
+
+.card-number {
+    font-family: monospace;
+    font-size: 1.25rem;
+    letter-spacing: 2px;
+}
+
+.card-details {
+    display: flex;
+    justify-content: space-between;
+    text-transform: uppercase;
+    font-size: 0.875rem;
+}
