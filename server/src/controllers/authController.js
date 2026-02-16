@@ -21,7 +21,9 @@ exports.register = async (req, res) => {
             return res.status(400).json({ message: 'User already exists' });
         }
 
-        res.status(501).json({ message: 'Registration Logic Not Fully Implemented Yet' });
+        console.log('TODO: Complete Registration Implementation');
+        // Prevent hanging request for now
+        return res.json({ message: 'Registration not implemented yet' });
 
         /* 
         // Student Task: Implement this section
@@ -78,7 +80,8 @@ exports.login = async (req, res) => {
             return res.status(400).json({ message: 'Invalid Credentials' });
         }
 
-        res.status(501).json({ message: 'Login Logic Not Fully Implemented Yet' });
+        console.log('TODO: Complete Login Implementation');
+        return res.json({ message: 'Login not implemented yet' });
 
         /*
         // Student Task: Implement this section
@@ -123,7 +126,8 @@ exports.getMe = async (req, res) => {
         // 2. Find user in database, excluding password
         // 3. Send user data in response
 
-        res.status(501).json({ message: 'Not Implemented' });
+        console.log('TODO: Complete GetMe Implementation');
+        return res.json(null);
 
         /*
         const user = await User.findById(req.user.id).select('-password');

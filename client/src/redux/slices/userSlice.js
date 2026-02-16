@@ -19,7 +19,8 @@ export const getAllUsers = createAsyncThunk(
                 },
             };
 
-            throw new Error('Get All Users Not Implemented Yet');
+            console.log('Get All Users Not Implemented Yet');
+            return [];
 
             /*
             // Student Task: Implement this section
@@ -54,7 +55,8 @@ export const deleteUser = createAsyncThunk(
                 },
             };
 
-            throw new Error('Delete User Not Implemented Yet');
+            console.log('Delete User Not Implemented Yet');
+            return null;
 
             /*
             // Student Task: Implement this section
