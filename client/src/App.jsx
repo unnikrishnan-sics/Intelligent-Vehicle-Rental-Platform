@@ -33,12 +33,12 @@ function App() {
             {/* Public Routes */}
             <Route path="/" element={<Home />} />
             {/* Student Exercise: Uncomment these routes after implementing Auth & User Dashboard */}
-            {/* <Route path="/login" element={<Login />} /> */}
-            {/* <Route path="/register" element={<Register />} /> */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
             <Route path="/vehicles" element={<VehicleList />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
-            {/* <Route path="/dashboard" element={<UserDashboard />} /> */}
+            <Route path="/dashboard" element={<UserDashboard />} />
 
             {/* Admin Routes (Nested) */}
             <Route path="/admin" element={<AdminLayout />}>

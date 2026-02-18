@@ -1,4 +1,2 @@
 /* UserDashboard.css */
-.user-dashboard-container {
-    min-height: 80vh;
-}
+/* Styles mostly handled by Tailwind CSS classes in the component */

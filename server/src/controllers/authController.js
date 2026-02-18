@@ -7,12 +7,6 @@ const jwt = require('jsonwebtoken');
 // @access  Public
 exports.register = async (req, res) => {
     try {
-        // TODO: Complete the registration implementation
-        // 1. Create new user
-        // 2. Save user to database
-        // 3. Create JWT token
-        // 4. Send response with token and user data
-
         const { name, email, password, role } = req.body;
 
         // Check if user exists
@@ -21,13 +15,6 @@ exports.register = async (req, res) => {
             return res.status(400).json({ message: 'User already exists' });
         }
 
-        console.log('TODO: Complete Registration Implementation');
-        // Prevent hanging request for now
-        return res.json({ message: 'Registration not implemented yet' });
-
-        /* 
-        // Student Task: Implement this section
-        
         // Create user
         user = new User({
             name,
@@ -55,7 +42,6 @@ exports.register = async (req, res) => {
                 res.status(201).json({ token, user: { id: user.id, name: user.name, role: user.role } });
             }
         );
-        */
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server Error');
@@ -67,11 +53,6 @@ exports.register = async (req, res) => {
 // @access  Public
 exports.login = async (req, res) => {
     try {
-        // TODO: Complete the login implementation
-        // 1. Check if password matches
-        // 2. Create JWT token
-        // 3. Send response with token and user data
-
         const { email, password } = req.body;
 
         // Check if user exists
@@ -79,12 +60,6 @@ exports.login = async (req, res) => {
         if (!user) {
             return res.status(400).json({ message: 'Invalid Credentials' });
         }
-
-        console.log('TODO: Complete Login Implementation');
-        return res.json({ message: 'Login not implemented yet' });
-
-        /*
-        // Student Task: Implement this section
 
         // specific check for password match
         const isMatch = await user.matchPassword(password);
@@ -109,7 +84,6 @@ exports.login = async (req, res) => {
                 res.json({ token, user: { id: user.id, name: user.name, role: user.role } });
             }
         );
-        */
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server Error');
@@ -121,18 +95,8 @@ exports.login = async (req, res) => {
 // @access  Private
 exports.getMe = async (req, res) => {
     try {
-        // TODO: Get current logged in user
-        // 1. Use user ID from req.user (set by auth middleware)
-        // 2. Find user in database, excluding password
-        // 3. Send user data in response
-
-        console.log('TODO: Complete GetMe Implementation');
-        return res.json(null);
-
-        /*
         const user = await User.findById(req.user.id).select('-password');
         res.json(user);
-        */
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server Error');
@@ -169,6 +133,30 @@ exports.deleteUser = async (req, res) => {
 
         await user.deleteOne();
         res.json({ message: 'User removed' });
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+};
+
+// @desc    Update user details
+// @route   PUT /api/auth/updatedetails
+// @access  Private
+exports.updateDetails = async (req, res) => {
+    try {
+        const fieldsToUpdate = {
+            name: req.body.name,
+            email: req.body.email,
+            phone: req.body.phone,
+            licenseDetails: req.body.licenseDetails
+        };
+
+        const user = await User.findByIdAndUpdate(req.user.id, fieldsToUpdate, {
+            new: true,
+            runValidators: true
+        }).select('-password');
+
+        res.json(user);
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server Error');

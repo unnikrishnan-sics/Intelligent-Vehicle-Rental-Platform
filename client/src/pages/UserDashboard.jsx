@@ -1,26 +1,38 @@
 import { useEffect, useState, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getMyBookings, reset } from '../redux/slices/bookingSlice';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { Map, Calendar, Clock, ShieldCheck, Navigation } from 'lucide-react';
+import { Map, Calendar, Clock, ShieldCheck, Navigation, User, LayoutDashboard, LogOut } from 'lucide-react';
 import LiveMap from '../components/LiveMap';
+import UserProfile from '../components/UserProfile';
+import { logout, reset as authReset } from '../redux/slices/authSlice';
 import { io } from 'socket.io-client';
 import './UserDashboard.css';
 
 const UserDashboard = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const location = useLocation();
     const { user } = useSelector((state) => state.auth);
     const { bookings, isLoading, isError, message } = useSelector(
         (state) => state.bookings
     );
+
+    const [activeTab, setActiveTab] = useState('dashboard');
 
     const simulationWorker = useRef(null);
     const watchId = useRef(null);
     const socketRef = useRef(null);
     const simulatedPos = useRef({ lat: 20.5937, lng: 78.9629 });
     const lastGpsUpdate = useRef(0);
+
+    // Check for navigation state to set initial tab
+    useEffect(() => {
+        if (location.state?.tab) {
+            setActiveTab(location.state.tab);
+        }
+    }, [location]);
 
     // Initialize Socket and Worker
     useEffect(() => {
@@ -148,122 +160,215 @@ const UserDashboard = () => {
         }
     };
 
+    const handleLogout = () => {
+        dispatch(logout());
+        dispatch(authReset());
+        navigate('/');
+    };
+
     // Filter active vehicles for the map
     const activeVehicles = bookings
         .filter(b => (b.status === 'active' || b.status === 'confirmed') && b.vehicle)
         .map(b => b.vehicle);
 
     if (isLoading) {
-        return <div className="text-center mt-20">Loading dashboard...</div>;
+        return (
+            <div className="flex justify-center items-center h-screen bg-gray-50">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+            </div>
+        );
     }
 
     return (
-        <div className="user-dashboard-container container mx-auto px-4 py-8">
-            <div className="dashboard-header mb-8 border-b pb-6">
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome, {user && user.name}</h1>
-                <p className="text-gray-500">Manage your bookings and track your active rentals.</p>
-            </div>
-
-            <div className="dashboard-content grid lg:grid-cols-3 gap-8">
-                {/* Live Tracking Section - Only show if there are active rentals */}
-                {activeVehicles.length > 0 && (
-                    <section className="live-tracking-section lg:col-span-2">
-                        <div className="section-header flex items-center justify-between gap-2 mb-4">
-                            <div className="flex items-center gap-2">
-                                <Map className="text-blue-600" size={24} />
-                                <h2 className="text-xl font-bold m-0">Live Tracking</h2>
+        <div className="min-h-screen bg-gray-50">
+            <div className="flex flex-col md:flex-row min-h-[calc(100vh-64px)]">
+                {/* Sidebar */}
+                <aside className="w-full md:w-64 bg-white border-r border-gray-200 shadow-sm z-10">
+                    <div className="p-6">
+                        <div className="flex items-center gap-3 mb-8">
+                            <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-xl">
+                                {user?.name?.charAt(0) || 'U'}
                             </div>
-                            <div className="flex items-center gap-2 px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-semibold animate-pulse">
-                                <ShieldCheck size={16} />
-                                <span>GPS Monitoring Active</span>
+                            <div>
+                                <h3 className="font-bold text-gray-800 truncate max-w-[140px]">{user?.name}</h3>
+                                <p className="text-xs text-gray-500">Member</p>
                             </div>
                         </div>
-                        <div className="live-map-wrapper bg-white p-1 rounded-xl shadow-sm border border-gray-100 overflow-hidden" style={{ minHeight: '400px' }}>
-                            <div className="bg-blue-50 px-4 py-2 text-xs text-blue-700 flex justify-between items-center">
-                                <span className="flex items-center gap-2">
-                                    <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
-                                    Live Telemetry Active - Sharing location with Admin
-                                </span>
-                            </div>
-                            <LiveMap vehicles={activeVehicles} />
-                        </div>
-                    </section>
-                )}
 
-                <section className={`bookings-section ${activeVehicles.length > 0 ? '' : 'lg:col-span-3'}`}>
-                    <div className="section-header flex items-center gap-2 mb-4">
-                        <Calendar className="text-indigo-600" size={24} />
-                        <h2 className="text-xl font-bold m-0">My Bookings</h2>
-                    </div>
+                        <nav className="space-y-2">
+                            <button
+                                onClick={() => setActiveTab('dashboard')}
+                                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeTab === 'dashboard'
+                                        ? 'bg-blue-50 text-blue-600 font-medium'
+                                        : 'text-gray-600 hover:bg-gray-50'
+                                    }`}
+                            >
+                                <LayoutDashboard size={20} />
+                                Dashboard
+                            </button>
+                            <button
+                                onClick={() => setActiveTab('profile')}
+                                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeTab === 'profile'
+                                        ? 'bg-blue-50 text-blue-600 font-medium'
+                                        : 'text-gray-600 hover:bg-gray-50'
+                                    }`}
+                            >
+                                <User size={20} />
+                                Manage Profile
+                            </button>
+                        </nav>
 
-                    {bookings.length === 0 ? (
-                        <div className="empty-state text-center py-10 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200">
-                            <p className="text-gray-500 mb-4">You haven't made any bookings yet.</p>
-                            <button className="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition" onClick={() => navigate('/vehicles')}>
-                                Browse Vehicles
+                        <div className="mt-auto pt-8 border-t border-gray-100 mt-8">
+                            <button
+                                onClick={handleLogout}
+                                className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-red-600 hover:bg-red-50 transition-colors"
+                            >
+                                <LogOut size={20} />
+                                Logout
                             </button>
                         </div>
-                    ) : (
-                        <div className="bookings-list flex flex-col gap-6">
-                            {bookings.map((booking) => (
-                                <div key={booking._id} className="booking-card bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col md:flex-row hover:shadow-md transition-shadow">
-                                    {/* Vehicle Image - Fixed styling to prevent overflow */}
-                                    <div className="w-full md:w-64 h-48 md:h-auto flex-shrink-0 relative bg-gray-100">
-                                        <img
-                                            src={booking.vehicle?.images[0] || 'https://via.placeholder.com/300x200'}
-                                            alt={booking.vehicle?.make}
-                                            className="w-full h-full object-cover absolute inset-0"
-                                        />
-                                    </div>
+                    </div>
+                </aside>
 
-                                    {/* Booking Details */}
-                                    <div className="p-6 flex-grow flex flex-col justify-between">
-                                        <div>
-                                            <div className="flex justify-between items-start mb-2">
-                                                <div>
-                                                    <h3 className="text-xl font-bold text-gray-900">{booking.vehicle?.make} {booking.vehicle?.model}</h3>
-                                                    <p className="text-gray-500 font-medium">{booking.vehicle?.licensePlate}</p>
-                                                </div>
-                                                <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider
-                                                    ${booking.status === 'confirmed' ? 'bg-green-100 text-green-800' :
-                                                        booking.status === 'active' ? 'bg-blue-100 text-blue-800' :
-                                                            booking.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                                                                booking.status === 'cancelled' ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800'}`}>
-                                                    {booking.status}
-                                                </span>
-                                            </div>
-
-                                            <div className="mt-4 grid grid-cols-2 gap-y-2 text-sm text-gray-600">
-                                                <div className="flex items-center gap-2">
-                                                    <Calendar size={16} className="text-indigo-500" />
-                                                    <span>{new Date(booking.startDate).toLocaleDateString()} - {new Date(booking.endDate).toLocaleDateString()}</span>
-                                                </div>
-                                                <div className="flex items-center gap-2">
-                                                    <Clock size={16} className="text-indigo-500" />
-                                                    <span>{Math.ceil((new Date(booking.endDate) - new Date(booking.startDate)) / (1000 * 60 * 60 * 24))} Days</span>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div className="mt-6 flex items-center justify-between pt-4 border-t border-gray-100">
-                                            <div>
-                                                <p className="text-xs text-gray-500 uppercase font-semibold">Total Amount</p>
-                                                <p className="text-2xl font-bold text-indigo-600">${booking.totalPrice}</p>
-                                            </div>
-
-                                            {booking.status === 'active' && (
-                                                <div className="text-xs text-green-600 flex items-center gap-1 font-semibold">
-                                                    <Navigation size={14} className="animate-spin-slow" />
-                                                    Tracking Active
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
+                {/* Main Content */}
+                <main className="flex-1 p-4 md:p-8 overflow-y-auto">
+                    {activeTab === 'dashboard' && (
+                        <div className="space-y-8 animate-fade-in">
+                            <div className="flex justify-between items-end">
+                                <div>
+                                    <h1 className="text-2xl font-bold text-gray-900">Dashboard Overview</h1>
+                                    <p className="text-gray-500 mt-1">Track your rentals and view booking history.</p>
                                 </div>
-                            ))}
+                            </div>
+
+                            {/* Live Tracking Section */}
+                            {activeVehicles.length > 0 && (
+                                <section className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                                    <div className="p-4 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
+                                        <div className="flex items-center gap-2">
+                                            <Map className="text-blue-600" size={20} />
+                                            <h2 className="font-bold text-gray-800">Live Active Rentals</h2>
+                                        </div>
+                                        <div className="flex items-center gap-2 px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-semibold animate-pulse">
+                                            <ShieldCheck size={14} />
+                                            <span>GPS Active</span>
+                                        </div>
+                                    </div>
+                                    <div className="h-[400px]">
+                                        <LiveMap vehicles={activeVehicles} />
+                                    </div>
+                                </section>
+                            )}
+
+                            {/* Bookings List */}
+                            <section>
+                                <div className="flex items-center gap-2 mb-4">
+                                    <Calendar className="text-indigo-600" size={20} />
+                                    <h2 className="text-lg font-bold text-gray-800">My Bookings</h2>
+                                </div>
+
+                                {bookings.length === 0 ? (
+                                    <div className="text-center py-12 bg-white rounded-xl border border-gray-200 shadow-sm">
+                                        <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                            <Calendar className="text-gray-400" size={32} />
+                                        </div>
+                                        <h3 className="text-lg font-medium text-gray-900">No bookings yet</h3>
+                                        <p className="text-gray-500 mb-6 max-w-sm mx-auto">Get started by browsing our available vehicles for your next trip.</p>
+                                        <button
+                                            className="bg-blue-600 text-white px-6 py-2.5 rounded-lg hover:bg-blue-700 transition font-medium shadow-md"
+                                            onClick={() => navigate('/vehicles')}
+                                        >
+                                            Browse Vehicles
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <div className="grid gap-6">
+                                        {bookings.map((booking) => (
+                                            <div key={booking._id} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow flex flex-col md:flex-row">
+                                                {/* Vehicle Image */}
+                                                <div className="w-full md:w-72 h-48 md:h-auto flex-shrink-0 relative bg-gray-100">
+                                                    <img
+                                                        src={booking.vehicle?.images?.[0] || 'https://via.placeholder.com/300x200'}
+                                                        alt={booking.vehicle?.make || 'Vehicle'}
+                                                        className="w-full h-full object-cover absolute inset-0"
+                                                    />
+                                                    <div className={`absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider shadow-sm
+                                                        ${booking.status === 'confirmed' ? 'bg-green-500 text-white' :
+                                                            booking.status === 'active' ? 'bg-blue-500 text-white' :
+                                                                booking.status === 'pending' ? 'bg-yellow-500 text-white' :
+                                                                    booking.status === 'cancelled' ? 'bg-red-500 text-white' : 'bg-gray-500 text-white'}`}>
+                                                        {booking.status}
+                                                    </div>
+                                                </div>
+
+                                                {/* Details */}
+                                                <div className="p-6 flex-grow flex flex-col">
+                                                    <div className="flex justify-between items-start mb-4">
+                                                        <div>
+                                                            <h3 className="text-xl font-bold text-gray-900">{booking.vehicle?.make} {booking.vehicle?.model}</h3>
+                                                            <p className="text-sm text-gray-500 font-medium flex items-center gap-1 mt-1">
+                                                                <span className="w-1.5 h-1.5 rounded-full bg-gray-400"></span>
+                                                                {booking.vehicle?.licensePlate}
+                                                            </p>
+                                                        </div>
+                                                        <div className="text-right">
+                                                            <p className="text-sm text-gray-500 mb-1">Total</p>
+                                                            <p className="text-2xl font-bold text-indigo-600">${booking.totalPrice}</p>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="grid grid-cols-2 gap-4 text-sm text-gray-600 mb-6 bg-gray-50 p-4 rounded-lg border border-gray-100">
+                                                        <div>
+                                                            <p className="text-xs text-gray-400 uppercase mb-1">Pick-up</p>
+                                                            <div className="font-semibold flex items-center gap-2">
+                                                                <Calendar size={14} className="text-blue-500" />
+                                                                {new Date(booking.startDate).toLocaleDateString()}
+                                                            </div>
+                                                        </div>
+                                                        <div>
+                                                            <p className="text-xs text-gray-400 uppercase mb-1">Drop-off</p>
+                                                            <div className="font-semibold flex items-center gap-2">
+                                                                <Calendar size={14} className="text-blue-500" />
+                                                                {new Date(booking.endDate).toLocaleDateString()}
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-span-2 pt-2 border-t border-gray-200 md:col-span-1 md:pt-0 md:border-0">
+                                                            <p className="text-xs text-gray-400 uppercase mb-1">Duration</p>
+                                                            <div className="font-semibold flex items-center gap-2">
+                                                                <Clock size={14} className="text-blue-500" />
+                                                                {Math.ceil((new Date(booking.endDate) - new Date(booking.startDate)) / (1000 * 60 * 60 * 24))} Days
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    {booking.status === 'active' && (
+                                                        <div className="mt-auto bg-blue-50 text-blue-700 px-4 py-3 rounded-lg flex items-center gap-3 text-sm font-medium border border-blue-100">
+                                                            <div className="relative">
+                                                                <Navigation size={18} className="text-blue-600" />
+                                                                <span className="absolute top-0 right-0 w-2 h-2 bg-blue-500 rounded-full animate-ping"></span>
+                                                            </div>
+                                                            Tracking Active - View at top of dashboard
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </section>
                         </div>
                     )}
-                </section>
+
+                    {activeTab === 'profile' && (
+                        <div className="animate-fade-in max-w-4xl mx-auto">
+                            <div className="mb-8">
+                                <h1 className="text-2xl font-bold text-gray-900">Manage Profile</h1>
+                                <p className="text-gray-500 mt-1">Update your personal information and license details.</p>
+                            </div>
+                            <UserProfile />
+                        </div>
+                    )}
+                </main>
             </div>
         </div>
     );
