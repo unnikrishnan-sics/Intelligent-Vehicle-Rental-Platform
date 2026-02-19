@@ -49,13 +49,13 @@ const AdminSidebar = () => {
                     Users
                 </Link>
 
-                {/* <Link
+                <Link
                     to="/admin/bookings"
                     className={`sidebar-link ${isActive('/admin/bookings') ? 'active' : ''}`}
                 >
                     <Calendar size={20} />
                     Bookings
-                </Link> */}
+                </Link>
             </nav>
 
             <div className="sidebar-footer">

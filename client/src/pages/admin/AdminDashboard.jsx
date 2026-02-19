@@ -50,7 +50,7 @@ const AdminDashboard = () => {
     const stats = [
         { title: 'Total Users', value: dashboardStats.users.toString(), icon: <Users size={24} />, color: 'blue', link: '/admin/users' },
         { title: 'Total Vehicles', value: dashboardStats.vehicles.toString(), icon: <Car size={24} />, color: 'green', link: '/admin/vehicles' },
-        // { title: 'Active Bookings', value: dashboardStats.activeBookings.toString(), icon: <Calendar size={24} />, color: 'purple', link: '/admin/bookings' },
+        { title: 'Active Bookings', value: dashboardStats.activeBookings.toString(), icon: <Calendar size={24} />, color: 'purple', link: '/admin/bookings' },
         { title: 'Revenue', value: formatCurrency(dashboardStats.revenue), icon: <Activity size={24} />, color: 'yellow', link: '#' },
     ];
 
@@ -76,8 +76,8 @@ const AdminDashboard = () => {
             </div>
 
             <div className="dashboard-content-grid">
-                {/* Live Map Section - Commented out as requested */}
-                {/* <div className="dashboard-card col-span-2">
+                {/* Live Map Section */}
+                <div className="dashboard-card col-span-2">
                     <div className="card-header flex justify-between items-center mb-4">
                         <h2 className="card-title flex items-center gap-2">
                             <Map size={20} className="text-blue-500" /> Live Fleet Tracking
@@ -88,7 +88,7 @@ const AdminDashboard = () => {
                         </span>
                     </div>
                     <LiveMap vehicles={vehicles} />
-                </div> */}
+                </div>
 
                 <div className="dashboard-card">
                     <h2 className="card-title">Recent Activity</h2>
