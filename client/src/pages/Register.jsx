@@ -29,7 +29,7 @@ const Register = () => {
         }
 
         if (isSuccess || user) {
-            navigate('/');
+            navigate('/bookings');
         }
 
         dispatch(reset());

@@ -39,7 +39,7 @@ const Navbar = () => {
                         <>
                             {/* Standard User Links */}
                             {!(user?.user?.role === 'admin') && (
-                                <Link to="/dashboard" className="nav-link flex items-center gap-2 hover:text-blue-600 font-medium">
+                                <Link to="/bookings" className="nav-link flex items-center gap-2 hover:text-blue-600 font-medium">
                                     <Calendar size={18} />
                                     My Bookings
                                 </Link>
@@ -47,7 +47,7 @@ const Navbar = () => {
 
                             {/* User Profile - Shown for Both (Admin goes to Admin Panel) */}
                             <Link
-                                to={user?.user?.role === 'admin' ? "/admin" : "/dashboard"}
+                                to={user?.user?.role === 'admin' ? "/admin" : "/bookings"}
                                 className="nav-link flex items-center gap-2 hover:text-blue-600 font-medium"
                             >
                                 <User size={18} />

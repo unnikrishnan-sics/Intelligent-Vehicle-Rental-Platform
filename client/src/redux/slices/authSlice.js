@@ -76,6 +76,13 @@ export const authSlice = createSlice({
             state.isError = false;
             state.message = '';
         },
+        logoutUser: (state) => {
+            state.user = null;
+            state.isSuccess = false;
+            state.isError = false;
+            state.message = '';
+            localStorage.removeItem('user');
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -116,8 +123,11 @@ export const authSlice = createSlice({
             .addCase(updateDetails.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.isSuccess = true;
-                state.user = action.payload;
+                // Preserve the token and existing structure, only update the user object
+                state.user = { ...state.user, user: action.payload };
                 state.message = 'Profile updated successfully';
+                // Update localStorage to persist changes
+                localStorage.setItem('user', JSON.stringify(state.user));
             })
             .addCase(updateDetails.rejected, (state, action) => {
                 state.isLoading = false;
@@ -127,5 +137,5 @@ export const authSlice = createSlice({
     },
 });
 
-export const { reset } = authSlice.actions;
+export const { reset, logoutUser } = authSlice.actions;
 export default authSlice.reducer;

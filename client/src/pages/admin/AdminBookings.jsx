@@ -1,13 +1,18 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllBookings, updateBookingStatus } from '../../redux/slices/bookingSlice';
 import { Check, X, Clock, Play, Archive } from 'lucide-react';
 import { toast } from 'react-toastify';
 import '../AdminDashboard.css';
+import ConfirmationModal from '../../components/ConfirmationModal';
 
 const AdminBookings = () => {
     const dispatch = useDispatch();
     const { bookings, isLoading, isError, message } = useSelector((state) => state.bookings);
+
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
+    const [selectedBookingId, setSelectedBookingId] = useState(null);
+    const [targetStatus, setTargetStatus] = useState('');
 
     useEffect(() => {
         dispatch(getAllBookings());
@@ -19,13 +24,21 @@ const AdminBookings = () => {
         }
     }, [isError, message]);
 
-    const handleStatusUpdate = (id, status) => {
-        if (window.confirm(`Are you sure you want to mark this booking as ${status}?`)) {
-            dispatch(updateBookingStatus({ id, status }))
-                .unwrap()
-                .then(() => toast.success(`Booking marked as ${status}`))
-                .catch((err) => toast.error(err));
-        }
+    const handleStatusUpdateClick = (id, status) => {
+        setSelectedBookingId(id);
+        setTargetStatus(status);
+        setShowConfirmModal(true);
+    };
+
+    const confirmStatusUpdate = () => {
+        dispatch(updateBookingStatus({ id: selectedBookingId, status: targetStatus }))
+            .unwrap()
+            .then(() => toast.success(`Booking marked as ${targetStatus}`))
+            .catch((err) => toast.error(err));
+
+        setShowConfirmModal(false);
+        setSelectedBookingId(null);
+        setTargetStatus('');
     };
 
     const getStatusBadge = (status) => {
@@ -93,7 +106,7 @@ const AdminBookings = () => {
                                         <div className="action-buttons">
                                             {booking.status === 'confirmed' && (
                                                 <button
-                                                    onClick={() => handleStatusUpdate(booking._id, 'active')}
+                                                    onClick={() => handleStatusUpdateClick(booking._id, 'active')}
                                                     className="action-btn btn-start"
                                                     title="Start Rental"
                                                 >
@@ -102,7 +115,7 @@ const AdminBookings = () => {
                                             )}
                                             {booking.status === 'active' && (
                                                 <button
-                                                    onClick={() => handleStatusUpdate(booking._id, 'completed')}
+                                                    onClick={() => handleStatusUpdateClick(booking._id, 'completed')}
                                                     className="action-btn btn-complete"
                                                     title="Complete Rental"
                                                 >
@@ -111,7 +124,7 @@ const AdminBookings = () => {
                                             )}
                                             {booking.status !== 'cancelled' && booking.status !== 'completed' && (
                                                 <button
-                                                    onClick={() => handleStatusUpdate(booking._id, 'cancelled')}
+                                                    onClick={() => handleStatusUpdateClick(booking._id, 'cancelled')}
                                                     className="action-btn btn-cancel"
                                                     title="Cancel Booking"
                                                 >
@@ -129,6 +142,14 @@ const AdminBookings = () => {
                     )}
                 </div>
             </div>
+
+            <ConfirmationModal
+                isOpen={showConfirmModal}
+                onClose={() => setShowConfirmModal(false)}
+                onConfirm={confirmStatusUpdate}
+                title="Update Booking Status"
+                message={`Are you sure you want to mark this booking as ${targetStatus}?`}
+            />
         </div>
     );
 };

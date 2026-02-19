@@ -21,25 +21,23 @@ mongoose.connect(process.env.MONGO_URI)
 const importData = async () => {
     try {
         console.log('Clearing existing data...');
-        // await User.deleteMany();
+        await User.deleteMany();
         await Vehicle.deleteMany();
         await Booking.deleteMany();
 
         console.log('Seeding Users...');
-        // Create Admin (if not exists - usually easier to just clear all, but keeping it simple)
-        // Check if admin exists
-        let adminUser = await User.findOne({ email: 'admin@example.com' });
+        // Create Admin
+        let adminUser = await User.findOne({ email: 'admin@gmail.com' });
         if (!adminUser) {
-            const salt = await bcrypt.genSalt(10);
-            const hashedPassword = await bcrypt.hash('123456', salt);
             adminUser = await User.create({
                 name: 'System Admin',
-                email: 'admin@example.com',
-                password: hashedPassword,
+                email: 'admin@gmail.com',
+                password: 'admin@123',
                 role: 'admin'
             });
         }
 
+        /*
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash('123456', salt);
 
@@ -50,6 +48,7 @@ const importData = async () => {
             { name: 'Alice Brown', email: 'alice@example.com', password: hashedPassword, role: 'user' },
             { name: 'David Lee', email: 'david@example.com', password: hashedPassword, role: 'user' }
         ]);
+        */
 
         console.log('Seeding Vehicles...');
         const vehicles = await Vehicle.insertMany([
@@ -99,6 +98,7 @@ const importData = async () => {
             }
         ]);
 
+        /*
         console.log('Seeding Bookings...');
         await Booking.insertMany([
             {
@@ -138,6 +138,7 @@ const importData = async () => {
                 paymentStatus: 'paid'
             }
         ]);
+        */
 
         console.log('Data Imported!');
         process.exit();

@@ -97,6 +97,16 @@ exports.updateBookingStatus = async (req, res) => {
         // If completed, maybe update vehicle status back to available?
         // Logic can be expanded here
 
+        // If completed, update vehicle status to 'cleaning'
+        // Update Vehicle Status based on Booking Status
+        const Vehicle = require('../models/Vehicle');
+
+        if (status === 'completed') {
+            await Vehicle.findByIdAndUpdate(booking.vehicle, { status: 'cleaning' });
+        } else if (status === 'cancelled') {
+            await Vehicle.findByIdAndUpdate(booking.vehicle, { status: 'available' });
+        }
+
         await booking.save();
 
         // Return updated booking with populated fields

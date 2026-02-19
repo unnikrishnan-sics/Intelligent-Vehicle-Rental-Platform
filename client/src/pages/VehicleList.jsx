@@ -69,12 +69,12 @@ const VehicleList = () => {
                                             Currently Rented. Available from: {new Date(vehicle.nextAvailableDate).toLocaleDateString()}
                                         </p>
                                     )}
-                                    <button
+                                    {/* <button
                                         className="btn btn-primary w-full"
                                         onClick={() => setSelectedVehicle(vehicle)}
                                     >
                                         {vehicle.isAvailable === false ? 'Pre-Book for Later' : 'Book Now'}
-                                    </button>
+                                    </button> */}
                                 </div>
                             </div>
                         ))}

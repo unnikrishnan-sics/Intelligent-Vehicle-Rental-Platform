@@ -10,5 +10,7 @@ router.put('/updatedetails', protect, authController.updateDetails);
 
 router.get('/users', protect, admin, authController.getAllUsers);
 router.delete('/users/:id', protect, admin, authController.deleteUser);
+router.post('/forgotpassword', authController.forgotPassword);
+router.put('/resetpassword/:resettoken', authController.resetPassword);
 
 module.exports = router;

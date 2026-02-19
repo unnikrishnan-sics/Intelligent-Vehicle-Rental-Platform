@@ -10,6 +10,8 @@ import Footer from './components/Footer';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import VehicleList from './pages/VehicleList';
 import About from './pages/About';
 import Contact from './pages/Contact';
@@ -35,10 +37,12 @@ function App() {
             {/* Student Exercise: Uncomment these routes after implementing Auth & User Dashboard */}
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password/:token" element={<ResetPassword />} />
             <Route path="/vehicles" element={<VehicleList />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
-            <Route path="/dashboard" element={<UserDashboard />} />
+            <Route path="/bookings" element={<UserDashboard />} />
 
             {/* Admin Routes (Nested) */}
             <Route path="/admin" element={<AdminLayout />}>

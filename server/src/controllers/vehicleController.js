@@ -72,7 +72,12 @@ exports.getVehicles = async (req, res) => {
                 };
             }
 
-            return { ...vehicle, isAvailable: true, licensePlate: vehicle.licensePlate };
+            // If not rented, respect the DB status (available, maintenance, cleaning)
+            return {
+                ...vehicle,
+                isAvailable: vehicle.status === 'available',
+                licensePlate: vehicle.licensePlate
+            };
         }));
 
         res.json(vehiclesWithRenter);
@@ -157,18 +162,21 @@ exports.updateVehicle = async (req, res) => {
             });
         }
 
-        const { make, model, type, licensePlate, pricePerHour, description, currentLocation } = req.body;
+        const { make, model, type, licensePlate, pricePerHour, description, currentLocation, status } = req.body;
 
         const updateData = {
-            make,
-            model,
-            type,
-            licensePlate,
-            pricePerHour,
             description,
             images,
             currentLocation: currentLocation ? (typeof currentLocation === 'string' ? JSON.parse(currentLocation) : currentLocation) : vehicle.currentLocation
         };
+
+        // Only update fields if they are provided (Partial Update Support)
+        if (make) updateData.make = make;
+        if (model) updateData.model = model;
+        if (type) updateData.type = type;
+        if (licensePlate) updateData.licensePlate = licensePlate;
+        if (pricePerHour) updateData.pricePerHour = pricePerHour;
+        if (status) updateData.status = status;
 
         vehicle = await Vehicle.findByIdAndUpdate(
             req.params.id,

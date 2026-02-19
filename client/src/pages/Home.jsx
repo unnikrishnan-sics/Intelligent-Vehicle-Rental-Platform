@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { MapPin, Search, Shield, Clock, Award } from 'lucide-react';
-import CustomDatePicker from '../components/CustomDatePicker';
 import './Home.css';
 
 const Home = () => {
@@ -116,37 +115,6 @@ const Home = () => {
                             </div>
                         </div>
 
-                        <div className="search-divider"></div>
-
-                        <div className="search-group date-group">
-                            <div className="input-wrapper">
-                                <div className="input-content">
-                                    <label>Pick-up Date</label>
-                                    <CustomDatePicker
-                                        selected={startDate}
-                                        onChange={(date) => setStartDate(date)}
-                                        placeholder="Select Date"
-                                        minDate={new Date()}
-                                    />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="search-divider"></div>
-
-                        <div className="search-group date-group">
-                            <div className="input-wrapper">
-                                <div className="input-content">
-                                    <label>Drop-off Date</label>
-                                    <CustomDatePicker
-                                        selected={endDate}
-                                        onChange={(date) => setEndDate(date)}
-                                        placeholder="Select Date"
-                                        minDate={startDate || new Date()}
-                                    />
-                                </div>
-                            </div>
-                        </div>
 
                         <button className="btn-search" onClick={handleSearch}>
                             <Search size={20} />

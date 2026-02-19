@@ -144,3 +144,12 @@
     margin-top: 0.5rem;
     z-index: 10;
 }
+.status-maintenance {
+    background-color: #FEF3C7;
+    color: #92400E;
+}
+
+.status-cleaning {
+    background-color: #DBEAFE;
+    color: #1E40AF;
+}

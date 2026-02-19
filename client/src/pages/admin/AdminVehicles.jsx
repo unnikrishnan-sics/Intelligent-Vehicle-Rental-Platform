@@ -7,6 +7,7 @@ import { Plus, Trash2, Edit, X } from 'lucide-react';
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import '../AdminDashboard.css';
+import ConfirmationModal from '../../components/ConfirmationModal';
 
 // Fix for Leaflet icon not showing
 import L from 'leaflet';
@@ -61,6 +62,10 @@ const AdminVehicles = () => {
         imageUrl: '',
         imageFile: null,
     });
+
+    // Confirmation Modal State
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
+    const [deleteId, setDeleteId] = useState(null);
 
     useEffect(() => {
         if (isError) {
@@ -163,10 +168,16 @@ const AdminVehicles = () => {
         setShowModal(false);
     };
 
-    const onDelete = (id) => {
-        if (window.confirm('Are you sure you want to delete this vehicle?')) {
-            dispatch(deleteVehicle(id));
-        }
+    const handleDeleteClick = (id) => {
+        setDeleteId(id);
+        setShowConfirmModal(true);
+    };
+
+    const confirmDelete = () => {
+        dispatch(deleteVehicle(deleteId));
+        setShowConfirmModal(false);
+        setDeleteId(null);
+        toast.success('Vehicle deleted successfully');
     };
 
     if (isLoading && !showModal) {
@@ -222,9 +233,22 @@ const AdminVehicles = () => {
                                     <p>${vehicle.pricePerHour}</p>
                                 </td>
                                 <td>
-                                    <span className={`status-badge ${vehicle.status === 'available' ? 'status-available' : 'status-rented'}`}>
-                                        {vehicle.status}
-                                    </span>
+                                    <select
+                                        value={vehicle.status}
+                                        onChange={(e) => {
+                                            const newStatus = e.target.value;
+                                            const formData = new FormData();
+                                            formData.append('status', newStatus);
+                                            dispatch(updateVehicle({ id: vehicle._id, vehicleData: formData }));
+                                        }}
+                                        className={`status-badge ${vehicle.status === 'available' ? 'status-available' : vehicle.status === 'rented' ? 'status-rented' : 'status-maintenance'}`}
+                                        style={{ border: 'none', cursor: 'pointer', outline: 'none' }}
+                                    >
+                                        <option value="available">Available</option>
+                                        <option value="rented">Rented</option>
+                                        <option value="maintenance">Maintenance</option>
+                                        <option value="cleaning">Cleaning</option>
+                                    </select>
                                 </td>
                                 <td className="text-center">
                                     <div className="flex justify-center gap-2">
@@ -237,7 +261,7 @@ const AdminVehicles = () => {
                                             <Edit size={20} />
                                         </button>
                                         <button
-                                            onClick={() => onDelete(vehicle._id)}
+                                            onClick={() => handleDeleteClick(vehicle._id)}
                                             className="btn-icon-danger"
                                             title="Delete"
                                         >
@@ -390,6 +414,14 @@ const AdminVehicles = () => {
                     </div>
                 </div>
             )}
+
+            <ConfirmationModal
+                isOpen={showConfirmModal}
+                onClose={() => setShowConfirmModal(false)}
+                onConfirm={confirmDelete}
+                title="Delete Vehicle"
+                message="Are you sure you want to delete this vehicle? This action cannot be undone."
+            />
         </div>
     );
 };

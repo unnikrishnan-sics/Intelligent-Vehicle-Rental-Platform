@@ -30,12 +30,17 @@ const Login = () => {
             if (user?.user?.role === 'admin') {
                 navigate('/admin');
             } else {
-                navigate('/');
+                navigate('/bookings');
             }
         }
 
         dispatch(reset());
     }, [user, isError, isSuccess, message, navigate, dispatch]);
+
+    // Clear state on mount to prevent old errors from showing
+    useEffect(() => {
+        dispatch(reset());
+    }, [dispatch]);
 
     const onChange = (e) => {
         setFormData((prevState) => ({
@@ -92,6 +97,12 @@ const Login = () => {
                             onChange={onChange}
                             required
                         />
+                    </div>
+
+                    <div className="flex justify-end mb-4">
+                        <Link to="/forgot-password" style={{ color: '#2563eb', fontSize: '0.9rem', textDecoration: 'none' }}>
+                            Forgot Password?
+                        </Link>
                     </div>
 
                     <button type="submit" className="btn btn-primary auth-btn" disabled={isLoading}>

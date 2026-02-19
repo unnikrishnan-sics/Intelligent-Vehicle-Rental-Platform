@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getAllUsers, deleteUser, reset } from '../../redux/slices/userSlice';
 import { toast } from 'react-toastify';
@@ -6,10 +6,14 @@ import { Trash2 } from 'lucide-react';
 // Consider reusing AdminDashboard.css or creating common admin styles
 // For now, let's assume we can use the same table styles
 import '../AdminDashboard.css';
+import ConfirmationModal from '../../components/ConfirmationModal';
 
 const AdminUsers = () => {
     const dispatch = useDispatch();
     const { users, isLoading, isError, message } = useSelector((state) => state.users);
+
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
+    const [deleteId, setDeleteId] = useState(null);
 
     useEffect(() => {
         if (isError) {
@@ -22,6 +26,18 @@ const AdminUsers = () => {
             dispatch(reset());
         };
     }, [isError, message, dispatch]);
+
+    const handleDeleteClick = (id) => {
+        setDeleteId(id);
+        setShowConfirmModal(true);
+    };
+
+    const confirmDelete = () => {
+        dispatch(deleteUser(deleteId));
+        setShowConfirmModal(false);
+        setDeleteId(null);
+        toast.success('User deleted successfully');
+    };
 
     if (isLoading) {
         return <div className="text-center mt-8">Loading...</div>;
@@ -61,11 +77,7 @@ const AdminUsers = () => {
                                 </td>
                                 <td>
                                     <button
-                                        onClick={() => {
-                                            if (window.confirm('Are you sure you want to delete this user?')) {
-                                                dispatch(deleteUser(user._id));
-                                            }
-                                        }}
+                                        onClick={() => handleDeleteClick(user._id)}
                                         className="btn-icon-danger"
                                         title="Delete"
                                     >
@@ -77,6 +89,14 @@ const AdminUsers = () => {
                     </tbody>
                 </table>
             </div>
+
+            <ConfirmationModal
+                isOpen={showConfirmModal}
+                onClose={() => setShowConfirmModal(false)}
+                onConfirm={confirmDelete}
+                title="Delete User"
+                message="Are you sure you want to delete this user? This action cannot be undone."
+            />
         </div>
     );
 };

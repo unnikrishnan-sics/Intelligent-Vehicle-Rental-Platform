@@ -2,7 +2,13 @@ import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateDetails, reset } from '../redux/slices/authSlice';
 import { toast } from 'react-toastify';
-import { User, Mail, Phone, FileText, Edit2, Save, X } from 'lucide-react';
+import {
+    Grid, Paper, Typography, TextField, Button, Avatar, Box, Chip
+} from '@mui/material';
+import {
+    Edit as EditIcon, Save as SaveIcon, Close as CloseIcon,
+    Person, Email, Phone, Description, Event, VerifiedUser
+} from '@mui/icons-material';
 
 const UserProfile = () => {
     const dispatch = useDispatch();
@@ -18,13 +24,25 @@ const UserProfile = () => {
     });
 
     useEffect(() => {
+        if (user?.user) {
+            setFormData({
+                name: user.user.name || '',
+                email: user.user.email || '',
+                phone: user.user.phone || '',
+                licenseNumber: user.user.licenseDetails?.number || '',
+                licenseExpiry: user.user.licenseDetails?.expiryDate ? new Date(user.user.licenseDetails.expiryDate).toISOString().split('T')[0] : '',
+            });
+        }
+    }, [user]);
+
+    useEffect(() => {
         if (isError) {
             toast.error(message);
         }
         if (isSuccess && isEditing) {
             toast.success('Profile Updated Successfully');
             setIsEditing(false);
-            dispatch(reset()); // Reset state to prevent infinite loop or stale success
+            dispatch(reset());
         }
     }, [isError, isSuccess, message, isEditing, dispatch]);
 
@@ -47,140 +65,156 @@ const UserProfile = () => {
     };
 
     return (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <div className="p-6 border-b border-gray-200 flex justify-between items-center bg-gray-50">
-                <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
-                    <User size={24} className="text-blue-600" />
-                    My Profile
-                </h2>
-                {!isEditing ? (
-                    <button
-                        onClick={() => setIsEditing(true)}
-                        className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
-                    >
-                        <Edit2 size={16} />
-                        Edit Profile
-                    </button>
-                ) : (
-                    <button
-                        onClick={() => setIsEditing(false)}
-                        className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
-                    >
-                        <X size={16} />
-                        Cancel
-                    </button>
-                )}
-            </div>
+        <Grid container spacing={4}>
+            {/* Left Column: Profile Card */}
+            <Grid item xs={12} md={4}>
+                <Paper elevation={3} sx={{ borderRadius: 4, overflow: 'hidden', position: 'sticky', top: 100 }}>
+                    <Box sx={{ height: 120, background: 'linear-gradient(135deg, #2563eb 0%, #4f46e5 100%)' }} />
+                    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: -6, pb: 4, px: 3 }}>
+                        <Avatar
+                            sx={{ width: 100, height: 100, border: '4px solid white', fontSize: '2.5rem', bgcolor: '#e0e7ff', color: '#4f46e5' }}
+                        >
+                            {user?.user?.name?.charAt(0).toUpperCase() || 'U'}
+                        </Avatar>
 
-            <div className="p-6 md:p-8">
-                <form onSubmit={handleSubmit}>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-                        {/* Name */}
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-                            <div className="relative">
-                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <User className="h-5 w-5 text-gray-400" />
-                                </div>
-                                <input
-                                    type="text"
+                        <Typography variant="h5" fontWeight="bold" sx={{ mt: 2 }}>
+                            {user?.user?.name || 'User Name'}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                            {user?.user?.email || 'email@example.com'}
+                        </Typography>
+
+                        <Box sx={{ mt: 3, display: 'flex', gap: 1 }}>
+                            <Chip
+                                icon={<VerifiedUser fontSize="small" />}
+                                label="Verified"
+                                color="primary"
+                                size="small"
+                                variant="outlined"
+                            />
+                            <Chip
+                                icon={<Person fontSize="small" />}
+                                label="Member"
+                                color="success"
+                                size="small"
+                                variant="outlined"
+                            />
+                        </Box>
+                    </Box>
+                </Paper>
+            </Grid>
+
+            {/* Right Column: Details Form */}
+            <Grid item xs={12} md={8}>
+                <Paper elevation={3} sx={{ borderRadius: 4, overflow: 'hidden' }}>
+                    <Box sx={{ p: 4, borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', bgcolor: '#fafafa' }}>
+                        <Box>
+                            <Typography variant="h6" fontWeight="bold">Personal Information</Typography>
+                            <Typography variant="body2" color="text.secondary">Manage your personal details and license information.</Typography>
+                        </Box>
+                        <Button
+                            variant="outlined"
+                            startIcon={isEditing ? <CloseIcon /> : <EditIcon />}
+                            color={isEditing ? 'error' : 'primary'}
+                            onClick={() => setIsEditing(!isEditing)}
+                            sx={{ borderRadius: 2 }}
+                        >
+                            {isEditing ? 'Cancel' : 'Edit Profile'}
+                        </Button>
+                    </Box>
+
+                    <Box component="form" onSubmit={handleSubmit} sx={{ p: 4 }}>
+                        <Grid container spacing={3}>
+                            <Grid item xs={12} md={6}>
+                                <TextField
+                                    fullWidth
+                                    label="Full Name"
                                     name="name"
                                     value={formData.name}
                                     onChange={handleChange}
                                     disabled={!isEditing}
-                                    className={`pl-10 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm py-2.5 border ${!isEditing ? 'bg-gray-50 text-gray-500' : 'bg-white'}`}
+                                    InputProps={{
+                                        startAdornment: <Person color="action" sx={{ mr: 1 }} />,
+                                    }}
+                                    variant="outlined"
                                 />
-                            </div>
-                        </div>
-
-                        {/* Email */}
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                            <div className="relative">
-                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <Mail className="h-5 w-5 text-gray-400" />
-                                </div>
-                                <input
-                                    type="email"
+                            </Grid>
+                            <Grid item xs={12} md={6}>
+                                <TextField
+                                    fullWidth
+                                    label="Email Address"
                                     name="email"
                                     value={formData.email}
-                                    onChange={handleChange}
-                                    disabled={!isEditing} // Usually email change requires verification, but keeping enabled for now or disable if preferred
-                                    className={`pl-10 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm py-2.5 border ${!isEditing ? 'bg-gray-50 text-gray-500' : 'bg-white'}`}
+                                    disabled
+                                    InputProps={{
+                                        startAdornment: <Email color="action" sx={{ mr: 1 }} />,
+                                    }}
+                                    variant="outlined"
                                 />
-                            </div>
-                        </div>
-
-                        {/* Phone */}
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
-                            <div className="relative">
-                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <Phone className="h-5 w-5 text-gray-400" />
-                                </div>
-                                <input
-                                    type="tel"
+                            </Grid>
+                            <Grid item xs={12} md={6}>
+                                <TextField
+                                    fullWidth
+                                    label="Phone Number"
                                     name="phone"
                                     value={formData.phone}
                                     onChange={handleChange}
                                     disabled={!isEditing}
-                                    placeholder="+1 (555) 000-0000"
-                                    className={`pl-10 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm py-2.5 border ${!isEditing ? 'bg-gray-50 text-gray-500' : 'bg-white'}`}
+                                    InputProps={{
+                                        startAdornment: <Phone color="action" sx={{ mr: 1 }} />,
+                                    }}
+                                    variant="outlined"
                                 />
-                            </div>
-                        </div>
-
-                        {/* License Number */}
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Driving License Number</label>
-                            <div className="relative">
-                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <FileText className="h-5 w-5 text-gray-400" />
-                                </div>
-                                <input
-                                    type="text"
+                            </Grid>
+                            <Grid item xs={12} md={6}>
+                                <TextField
+                                    fullWidth
+                                    label="Driving License"
                                     name="licenseNumber"
                                     value={formData.licenseNumber}
                                     onChange={handleChange}
                                     disabled={!isEditing}
-                                    className={`pl-10 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm py-2.5 border ${!isEditing ? 'bg-gray-50 text-gray-500' : 'bg-white'}`}
+                                    InputProps={{
+                                        startAdornment: <Description color="action" sx={{ mr: 1 }} />,
+                                    }}
+                                    variant="outlined"
                                 />
-                            </div>
-                        </div>
-
-                        {/* License Expiry */}
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">License Expiry Date</label>
-                            <div className="relative">
-                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <FileText className="h-5 w-5 text-gray-400" />
-                                </div>
-                                <input
-                                    type="date"
+                            </Grid>
+                            <Grid item xs={12} md={6}>
+                                <TextField
+                                    fullWidth
+                                    label="License Expiry"
                                     name="licenseExpiry"
+                                    type="date"
                                     value={formData.licenseExpiry}
                                     onChange={handleChange}
                                     disabled={!isEditing}
-                                    className={`pl-10 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm py-2.5 border ${!isEditing ? 'bg-gray-50 text-gray-500' : 'bg-white'}`}
+                                    InputProps={{
+                                        startAdornment: <Event color="action" sx={{ mr: 1 }} />,
+                                    }}
+                                    InputLabelProps={{ shrink: true }}
+                                    variant="outlined"
                                 />
-                            </div>
-                        </div>
-                    </div>
+                            </Grid>
+                        </Grid>
 
-                    {isEditing && (
-                        <div className="mt-8 flex justify-end">
-                            <button
-                                type="submit"
-                                className="flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition shadow-md font-medium"
-                            >
-                                <Save size={18} />
-                                Save Changes
-                            </button>
-                        </div>
-                    )}
-                </form>
-            </div>
-        </div>
+                        {isEditing && (
+                            <Box sx={{ mt: 4, display: 'flex', justifyContent: 'flex-end' }}>
+                                <Button
+                                    type="submit"
+                                    variant="contained"
+                                    size="large"
+                                    startIcon={<SaveIcon />}
+                                    sx={{ borderRadius: 2, px: 4, background: 'linear-gradient(135deg, #2563eb 0%, #4f46e5 100%)' }}
+                                >
+                                    Save Changes
+                                </Button>
+                            </Box>
+                        )}
+                    </Box>
+                </Paper>
+            </Grid>
+        </Grid>
     );
 };
 
