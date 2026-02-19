@@ -97,16 +97,32 @@
 }
 
 .credit-card-mock {
-    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
     color: white;
     padding: 1.5rem;
     border-radius: 1rem;
     position: relative;
     height: 200px;
+    width: 100%;
+    max-width: 340px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Glassmorphism effect overlay */
+.credit-card-mock::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 60%);
+    pointer-events: none;
 }
 
 .card-chip {
