@@ -16,16 +16,24 @@ const AdminUsers = () => {
     const [deleteId, setDeleteId] = useState(null);
 
     useEffect(() => {
+        dispatch(getAllUsers());
+        return () => {
+            // Only reset on unmount if needed, or maybe not at all?
+            // If we reset, we lose the users when we navigate away and back?
+            // Let's keep reset for now as per original code, but maybe consider removing if persistence is desired.
+            // Actually, reset clears isLoading/isError/message, but not users usually unless coded to.
+            // Looking at userSlice: reset clears isLoading, isSuccess, isError, message. users are kept? No, let's check userSlice.
+            // userSlice reset: state.isLoading = false; state.isSuccess = false; state.isError = false; state.message = '';
+            // It does NOT clear users. So we are good.
+            dispatch(reset());
+        };
+    }, [dispatch]);
+
+    useEffect(() => {
         if (isError) {
             toast.error(message);
         }
-
-        dispatch(getAllUsers());
-
-        return () => {
-            dispatch(reset());
-        };
-    }, [isError, message, dispatch]);
+    }, [isError, message]);
 
     const handleDeleteClick = (id) => {
         setDeleteId(id);

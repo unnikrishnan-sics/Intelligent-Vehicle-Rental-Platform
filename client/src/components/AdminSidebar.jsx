@@ -56,6 +56,14 @@ const AdminSidebar = () => {
                     <Calendar size={20} />
                     Bookings
                 </Link>
+
+                <Link
+                    to="/admin/messages"
+                    className={`sidebar-link ${isActive('/admin/messages') ? 'active' : ''}`}
+                >
+                    <MessageSquare size={20} />
+                    Messages
+                </Link>
             </nav>
 
             <div className="sidebar-footer">

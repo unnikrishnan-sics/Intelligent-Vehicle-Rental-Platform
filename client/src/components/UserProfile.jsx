@@ -67,7 +67,7 @@ const UserProfile = () => {
     return (
         <Grid container spacing={4}>
             {/* Left Column: Profile Card */}
-            <Grid item xs={12} md={4}>
+            <Grid size={{ xs: 12, md: 4 }}>
                 <Paper elevation={3} sx={{ borderRadius: 4, overflow: 'hidden', position: 'sticky', top: 100 }}>
                     <Box sx={{ height: 120, background: 'linear-gradient(135deg, #2563eb 0%, #4f46e5 100%)' }} />
                     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: -6, pb: 4, px: 3 }}>
@@ -105,7 +105,7 @@ const UserProfile = () => {
             </Grid>
 
             {/* Right Column: Details Form */}
-            <Grid item xs={12} md={8}>
+            <Grid size={{ xs: 12, md: 8 }}>
                 <Paper elevation={3} sx={{ borderRadius: 4, overflow: 'hidden' }}>
                     <Box sx={{ p: 4, borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', bgcolor: '#fafafa' }}>
                         <Box>
@@ -125,7 +125,7 @@ const UserProfile = () => {
 
                     <Box component="form" onSubmit={handleSubmit} sx={{ p: 4 }}>
                         <Grid container spacing={3}>
-                            <Grid item xs={12} md={6}>
+                            <Grid size={{ xs: 12, md: 6 }}>
                                 <TextField
                                     fullWidth
                                     label="Full Name"
@@ -139,7 +139,7 @@ const UserProfile = () => {
                                     variant="outlined"
                                 />
                             </Grid>
-                            <Grid item xs={12} md={6}>
+                            <Grid size={{ xs: 12, md: 6 }}>
                                 <TextField
                                     fullWidth
                                     label="Email Address"
@@ -152,7 +152,7 @@ const UserProfile = () => {
                                     variant="outlined"
                                 />
                             </Grid>
-                            <Grid item xs={12} md={6}>
+                            <Grid size={{ xs: 12, md: 6 }}>
                                 <TextField
                                     fullWidth
                                     label="Phone Number"
@@ -166,7 +166,7 @@ const UserProfile = () => {
                                     variant="outlined"
                                 />
                             </Grid>
-                            <Grid item xs={12} md={6}>
+                            <Grid size={{ xs: 12, md: 6 }}>
                                 <TextField
                                     fullWidth
                                     label="Driving License"
@@ -180,7 +180,7 @@ const UserProfile = () => {
                                     variant="outlined"
                                 />
                             </Grid>
-                            <Grid item xs={12} md={6}>
+                            <Grid size={{ xs: 12, md: 6 }}>
                                 <TextField
                                     fullWidth
                                     label="License Expiry"

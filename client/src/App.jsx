@@ -16,6 +16,7 @@ import VehicleList from './pages/VehicleList';
 import About from './pages/About';
 import Contact from './pages/Contact';
 import UserDashboard from './pages/UserDashboard';
+import Support from './pages/Support';
 import NotFound from './pages/NotFound';
 
 // Admin Pages
@@ -24,6 +25,7 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminVehicles from './pages/admin/AdminVehicles';
 import AdminUsers from './pages/admin/AdminUsers';
 import AdminBookings from './pages/admin/AdminBookings';
+import AdminChat from './pages/admin/AdminChat';
 
 function App() {
   return (
@@ -43,6 +45,7 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/bookings" element={<UserDashboard />} />
+            <Route path="/support" element={<Support />} />
 
             {/* Admin Routes (Nested) */}
             <Route path="/admin" element={<AdminLayout />}>
@@ -50,6 +53,7 @@ function App() {
               <Route path="vehicles" element={<AdminVehicles />} />
               <Route path="users" element={<AdminUsers />} />
               <Route path="bookings" element={<AdminBookings />} />
+              <Route path="messages" element={<AdminChat />} />
             </Route>
 
             {/* 404 Route */}

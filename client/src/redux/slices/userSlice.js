@@ -8,19 +8,14 @@ export const getAllUsers = createAsyncThunk(
     'users/getAll',
     async (_, thunkAPI) => {
         try {
-            // TODO: Complete the get all users implementation
-            // 1. Make API call to get users
-            // 2. Return data
-
-            const token = thunkAPI.getState().auth.user.token;
             const config = {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             };
 
-            console.log('Get All Users Not Implemented Yet');
-            return [];
+            const response = await axios.get(API_URL + 'users', config);
+            return response.data;
 
             /*
             // Student Task: Implement this section
@@ -44,19 +39,14 @@ export const deleteUser = createAsyncThunk(
     'users/delete',
     async (id, thunkAPI) => {
         try {
-            // TODO: Complete the delete user implementation
-            // 1. Make API call to delete user
-            // 2. Return user ID
-
-            const token = thunkAPI.getState().auth.user.token;
             const config = {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             };
 
-            console.log('Delete User Not Implemented Yet');
-            return null;
+            await axios.delete(API_URL + 'users/' + id, config);
+            return id;
 
             /*
             // Student Task: Implement this section

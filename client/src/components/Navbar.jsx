@@ -39,10 +39,16 @@ const Navbar = () => {
                         <>
                             {/* Standard User Links */}
                             {!(user?.user?.role === 'admin') && (
-                                <Link to="/bookings" className="nav-link flex items-center gap-2 hover:text-blue-600 font-medium">
-                                    <Calendar size={18} />
-                                    My Bookings
-                                </Link>
+                                <>
+                                    <Link to="/bookings" className="nav-link flex items-center gap-2 hover:text-blue-600 font-medium">
+                                        <Calendar size={18} />
+                                        My Bookings
+                                    </Link>
+                                    <Link to="/support" className="nav-link flex items-center gap-2 hover:text-blue-600 font-medium">
+                                        <Menu size={18} />
+                                        Support
+                                    </Link>
+                                </>
                             )}
 
                             {/* User Profile - Shown for Both (Admin goes to Admin Panel) */}
@@ -78,6 +84,9 @@ const Navbar = () => {
                 <div className="mobile-menu" style={{ display: isOpen ? 'block' : 'none', padding: '1rem', background: 'white', borderTop: '1px solid #eee', position: 'absolute', top: '100%', left: 0, right: 0, boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}>
                     <Link to="/" className="nav-link" style={{ display: 'block', padding: '0.5rem 0' }}>Home</Link>
                     <Link to="/vehicles" className="nav-link" style={{ display: 'block', padding: '0.5rem 0' }}>Vehicles</Link>
+                    {user && !(user?.user?.role === 'admin') && (
+                        <Link to="/support" className="nav-link" style={{ display: 'block', padding: '0.5rem 0' }}>Support</Link>
+                    )}
                     {!user && (
                         <>
                             <Link to="/login" className="nav-link" style={{ display: 'block', padding: '0.5rem 0' }}>Login</Link>

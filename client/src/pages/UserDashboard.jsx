@@ -224,7 +224,7 @@ const UserDashboard = () => {
                     <Grid container spacing={4}>
                         {/* Live Tracking Section */}
                         {activeVehicles.length > 0 && (
-                            <Grid item xs={12}>
+                            <Grid size={{ xs: 12 }}>
                                 <div className="live-tracking-card">
                                     <div className="card-header">
                                         <div className="header-title">
@@ -247,7 +247,7 @@ const UserDashboard = () => {
                         )}
 
                         {/* Active Bookings List */}
-                        <Grid item xs={12}>
+                        <Grid size={{ xs: 12 }}>
                             {activeBookingsList.length === 0 ? (
                                 <div className="empty-state">
                                     <div className="empty-icon">
@@ -262,7 +262,7 @@ const UserDashboard = () => {
                             ) : (
                                 <Grid container spacing={3}>
                                     {activeBookingsList.map((booking) => (
-                                        <Grid item xs={12} md={6} lg={4} key={booking._id}>
+                                        <Grid size={{ xs: 12, md: 6, lg: 4 }} key={booking._id}>
                                             <BookingCard booking={booking} active />
                                         </Grid>
                                     ))}
@@ -284,7 +284,7 @@ const UserDashboard = () => {
                         ) : (
                             <Grid container spacing={3}>
                                 {historyBookingsList.map((booking) => (
-                                    <Grid item xs={12} md={6} lg={4} key={booking._id}>
+                                    <Grid size={{ xs: 12, md: 6, lg: 4 }} key={booking._id}>
                                         <BookingCard booking={booking} />
                                     </Grid>
                                 ))}

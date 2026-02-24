@@ -60,6 +60,34 @@ io.on('connection', (socket) => {
         }
     });
 
+    socket.on('join_chat', (userId) => {
+        socket.join(userId);
+        console.log(`User ${socket.id} joined chat room: ${userId}`);
+    });
+
+    socket.on('send_message', async (data) => {
+        const { sender, receiver, message, room } = data;
+        try {
+            const Message = require('./models/Message');
+            const newMessage = new Message({
+                sender,
+                receiver,
+                message
+            });
+            await newMessage.save();
+
+            // Broadcast to the room
+            io.to(room).emit('receive_message', {
+                sender,
+                receiver,
+                message,
+                timestamp: newMessage.timestamp
+            });
+        } catch (err) {
+            console.error('Error saving message:', err.message);
+        }
+    });
+
     socket.on('disconnect', () => {
         console.log('Client disconnected:', socket.id);
     });
@@ -75,6 +103,7 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/vehicles', require('./routes/vehicles'));
 app.use('/api/bookings', require('./routes/bookings'));
 app.use('/api/admin', require('./routes/admin'));
+app.use('/api/chat', require('./routes/chat'));
 
 const PORT = process.env.PORT || 5000;
 
