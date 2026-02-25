@@ -1,27 +1,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
-
-const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api') + '/auth/';
+import api from '../../utils/api';
 
 // Get all users
 export const getAllUsers = createAsyncThunk(
     'users/getAll',
     async (_, thunkAPI) => {
         try {
-            const config = {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            };
-
-            const response = await axios.get(API_URL + 'users', config);
+            const response = await api.get('auth/users');
             return response.data;
-
-            /*
-            // Student Task: Implement this section
-            const response = await axios.get(API_URL + 'users', config);
-            return response.data;
-            */
         } catch (error) {
             const message =
                 (error.response &&
@@ -39,20 +25,8 @@ export const deleteUser = createAsyncThunk(
     'users/delete',
     async (id, thunkAPI) => {
         try {
-            const config = {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            };
-
-            await axios.delete(API_URL + 'users/' + id, config);
+            await api.delete('auth/users/' + id);
             return id;
-
-            /*
-            // Student Task: Implement this section
-            await axios.delete(API_URL + 'users/' + id, config);
-            return id;
-            */
         } catch (error) {
             const message =
                 (error.response &&

@@ -119,7 +119,7 @@ exports.createVehicle = async (req, res) => {
         let images = [];
         if (req.files) {
             req.files.forEach(file => {
-                images.push(`${req.protocol}://${req.get('host')}/uploads/${file.filename}`);
+                images.push(`/uploads/${file.filename}`);
             });
         }
 
@@ -158,7 +158,7 @@ exports.updateVehicle = async (req, res) => {
         if (req.files && req.files.length > 0) {
             images = []; // Replace with new images (or append logic if preferred)
             req.files.forEach(file => {
-                images.push(`${req.protocol}://${req.get('host')}/uploads/${file.filename}`);
+                images.push(`/uploads/${file.filename}`);
             });
         }
 

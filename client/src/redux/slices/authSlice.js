@@ -123,11 +123,8 @@ export const authSlice = createSlice({
             .addCase(updateDetails.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.isSuccess = true;
-                // Preserve the token and existing structure, only update the user object
-                state.user = { ...state.user, user: action.payload };
+                state.user = action.payload;
                 state.message = 'Profile updated successfully';
-                // Update localStorage to persist changes
-                localStorage.setItem('user', JSON.stringify(state.user));
             })
             .addCase(updateDetails.rejected, (state, action) => {
                 state.isLoading = false;

@@ -41,7 +41,7 @@ exports.register = async (req, res) => {
             { expiresIn: '30d' },
             (err, token) => {
                 if (err) throw err;
-                res.status(201).json({ token, user: { id: user.id, name: user.name, role: user.role } });
+                res.status(201).json({ token, user: { id: user.id, name: user.name, email: user.email, role: user.role } });
             }
         );
     } catch (err) {
@@ -85,7 +85,7 @@ exports.login = async (req, res) => {
             { expiresIn: '30d' },
             (err, token) => {
                 if (err) throw err;
-                res.json({ token, user: { id: user.id, name: user.name, role: user.role } });
+                res.json({ token, user: { id: user.id, name: user.name, email: user.email, role: user.role } });
             }
         );
     } catch (err) {
@@ -150,12 +150,41 @@ exports.updateDetails = async (req, res) => {
     try {
         const { name, email, phone, licenseDetails } = req.body;
 
-        // Build update object dynamically to avoid null/undefined overwrites
+        // Validation for mandatory fields
+        if (name !== undefined && name.trim() === '') {
+            return res.status(400).json({ message: 'Name cannot be empty' });
+        }
+        if (email !== undefined && email.trim() === '') {
+            return res.status(400).json({ message: 'Email cannot be empty' });
+        }
+
+        // Build update object dynamically
         const fieldsToUpdate = {};
         if (name) fieldsToUpdate.name = name;
         if (email) fieldsToUpdate.email = email;
         if (phone) fieldsToUpdate.phone = phone;
-        if (licenseDetails) fieldsToUpdate.licenseDetails = licenseDetails;
+
+        // Handle licenseDetails
+        // If coming from FormData, it might be a JSON string or individual fields
+        let parsedLicenseDetails = {};
+        if (typeof licenseDetails === 'string') {
+            try {
+                parsedLicenseDetails = JSON.parse(licenseDetails);
+            } catch (e) {
+                // If parsing fails, it's not JSON
+            }
+        } else if (licenseDetails) {
+            parsedLicenseDetails = licenseDetails;
+        }
+
+        // Add file if uploaded
+        if (req.file) {
+            parsedLicenseDetails.image = `/uploads/${req.file.filename}`;
+        }
+
+        if (Object.keys(parsedLicenseDetails).length > 0) {
+            fieldsToUpdate.licenseDetails = parsedLicenseDetails;
+        }
 
         const user = await User.findByIdAndUpdate(req.user.id, fieldsToUpdate, {
             new: true,
@@ -177,12 +206,20 @@ exports.updateDetails = async (req, res) => {
 // @access  Public
 exports.forgotPassword = async (req, res) => {
     const { email } = req.body;
+    console.log(`Forgot password request for: ${email} at ${new Date().toISOString()}`);
 
     try {
         const user = await User.findOne({ email });
 
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Rate limiting: check if last request was less than 60 seconds ago
+        const now = Date.now();
+        if (user.lastForgotPasswordRequest && (now - new Date(user.lastForgotPasswordRequest).getTime() < 60000)) {
+            const secondsLeft = Math.ceil((60000 - (now - new Date(user.lastForgotPasswordRequest).getTime())) / 1000);
+            return res.status(429).json({ message: `Please wait ${secondsLeft} seconds before requesting another reset link.` });
         }
 
         // Generate token
@@ -196,6 +233,7 @@ exports.forgotPassword = async (req, res) => {
 
         // Set expire
         user.resetPasswordExpire = Date.now() + 10 * 60 * 1000; // 10 Minutes
+        user.lastForgotPasswordRequest = Date.now();
 
         await user.save({ validateBeforeSave: false });
 

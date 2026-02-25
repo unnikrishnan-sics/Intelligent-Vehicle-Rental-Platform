@@ -1,15 +1,33 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout, reset } from '../redux/slices/authSlice';
-import { Menu, X, Car, User, LogOut, LayoutDashboard, Calendar } from 'lucide-react';
+import { Menu, X, Car, User, LogOut, LayoutDashboard, Calendar, ChevronDown, UserCircle, Settings } from 'lucide-react';
 import './Navbar.css';
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const dropdownRef = useRef(null);
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const { user } = useSelector((state) => state.auth);
+
+    // Handle click outside to close dropdown
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setIsDropdownOpen(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    const toggleDropdown = () => {
+        setIsDropdownOpen(!isDropdownOpen);
+    };
 
     const onLogout = () => {
         dispatch(logout());
@@ -51,19 +69,57 @@ const Navbar = () => {
                                 </>
                             )}
 
-                            {/* User Profile - Shown for Both (Admin goes to Admin Panel) */}
-                            <Link
-                                to={user?.user?.role === 'admin' ? "/admin" : "/bookings"}
-                                className="nav-link flex items-center gap-2 hover:text-blue-600 font-medium"
-                            >
-                                <User size={18} />
-                                {user?.name || user?.user?.name || 'My Account'}
-                            </Link>
+                            {/* User Profile Dropdown */}
+                            <div className="profile-dropdown-container" ref={dropdownRef}>
+                                <button
+                                    onClick={toggleDropdown}
+                                    className={`nav-link profile-trigger ${isDropdownOpen ? 'active' : ''}`}
+                                >
+                                    <div className="avatar-sm">
+                                        {(user?.user?.name || user?.name)?.charAt(0).toUpperCase() || 'U'}
+                                    </div>
+                                    <span className="profile-name">
+                                        {user?.user?.name || user?.name || 'My Account'}
+                                    </span>
+                                    <ChevronDown size={14} className={`dropdown-arrow ${isDropdownOpen ? 'rotate' : ''}`} />
+                                </button>
 
-                            <button onClick={onLogout} className="nav-link btn-danger">
-                                <LogOut size={18} />
-                                Logout
-                            </button>
+                                {isDropdownOpen && (
+                                    <div className="dropdown-menu animate-fade-in">
+                                        <div className="dropdown-header">
+                                            <p className="user-email">{user?.user?.email || user?.email}</p>
+                                        </div>
+                                        <div className="dropdown-divider"></div>
+
+                                        <Link
+                                            to={user?.user?.role === 'admin' ? "/admin" : "/bookings"}
+                                            className="dropdown-item"
+                                            onClick={() => setIsDropdownOpen(false)}
+                                        >
+                                            <LayoutDashboard size={16} />
+                                            {user?.user?.role === 'admin' ? 'Admin Panel' : 'My Bookings'}
+                                        </Link>
+
+                                        {!(user?.user?.role === 'admin') && (
+                                            <Link
+                                                to="/bookings"
+                                                state={{ tab: 'profile' }}
+                                                className="dropdown-item"
+                                                onClick={() => setIsDropdownOpen(false)}
+                                            >
+                                                <UserCircle size={16} />
+                                                Manage Profile
+                                            </Link>
+                                        )}
+
+                                        <div className="dropdown-divider"></div>
+                                        <button onClick={() => { onLogout(); setIsDropdownOpen(false); }} className="dropdown-item text-danger">
+                                            <LogOut size={16} />
+                                            Logout
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
                         </>
                     ) : (
                         <>

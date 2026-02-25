@@ -190,9 +190,9 @@ const UserDashboard = () => {
                         </div>
                         <div className="user-section">
                             <div className="user-info">
-                                <span>Welcome, <b>{user?.name}</b></span>
+                                <span>Welcome, <b>{user?.user?.name || user?.name}</b></span>
                                 <div className="avatar">
-                                    {user?.name?.charAt(0) || 'U'}
+                                    {(user?.user?.name || user?.name)?.charAt(0).toUpperCase() || 'U'}
                                 </div>
                             </div>
                             <button onClick={handleLogout} className="logout-btn">

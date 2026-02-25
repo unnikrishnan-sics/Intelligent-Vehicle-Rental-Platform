@@ -38,12 +38,12 @@ const BookingModal = ({ vehicle, onClose }) => {
         setStep(2); // Move to Payment
     };
 
-    // Payment Form State
+    const [isProcessing, setIsProcessing] = useState(false);
     const [paymentData, setPaymentData] = useState({
         cardNumber: '',
         expiry: '',
         cvv: '',
-        name: user?.name || ''
+        name: user?.user?.name || user?.name || ''
     });
 
     const handlePaymentChange = (e) => {
@@ -61,7 +61,29 @@ const BookingModal = ({ vehicle, onClose }) => {
         setPaymentData(prev => ({ ...prev, [name]: formattedValue }));
     };
 
+    const validatePayment = () => {
+        const { cardNumber, expiry, cvv, name } = paymentData;
+        if (cardNumber.length < 19) {
+            toast.error('Please enter a valid card number');
+            return false;
+        }
+        if (expiry.length < 5) {
+            toast.error('Please enter a valid expiry date');
+            return false;
+        }
+        if (cvv.length < 3) {
+            toast.error('Please enter a valid CVV');
+            return false;
+        }
+        if (!name.trim()) {
+            toast.error('Please enter the cardholder name');
+            return false;
+        }
+        return true;
+    };
+
     const confirmPayment = async () => {
+        if (!validatePayment()) return;
         setIsProcessing(true);
 
         // Simulate Payment Gateway Delay

@@ -32,6 +32,13 @@ const VehicleList = () => {
         };
     }, [isError, message, dispatch, location.search]);
 
+    const getVehicleImageUrl = (imagePath) => {
+        if (!imagePath) return 'https://via.placeholder.com/300x200';
+        if (imagePath.startsWith('http')) return imagePath;
+        const baseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace('/api', '');
+        return `${baseUrl}${imagePath}`;
+    };
+
     if (isLoading) {
         return <div className="text-center mt-20">Loading vehicles...</div>;
     }
@@ -52,7 +59,7 @@ const VehicleList = () => {
                         {vehicles.map((vehicle) => (
                             <div key={vehicle._id} className="vehicle-card">
                                 <img
-                                    src={vehicle.images[0] || 'https://via.placeholder.com/300x200'}
+                                    src={getVehicleImageUrl(vehicle.images[0])}
                                     alt={`${vehicle.make} ${vehicle.model}`}
                                     className="vehicle-image"
                                 />
