@@ -340,7 +340,7 @@ const BookingCard = ({ booking, active }) => {
                         {booking.vehicle?.make} {booking.vehicle?.model}
                     </Typography>
                     <Typography variant="subtitle1" color="primary" fontWeight="bold">
-                        ${booking.totalPrice}
+                        ₹{booking.totalPrice}
                     </Typography>
                 </div>
 

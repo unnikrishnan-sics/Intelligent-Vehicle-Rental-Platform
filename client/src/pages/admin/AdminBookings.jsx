@@ -97,7 +97,7 @@ const AdminBookings = () => {
                                         </div>
                                     </td>
                                     <td style={{ fontWeight: 700 }}>
-                                        ${booking.totalPrice}
+                                        ₹{booking.totalPrice}
                                     </td>
                                     <td>
                                         {getStatusBadge(booking.status)}

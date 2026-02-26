@@ -69,7 +69,7 @@ const VehicleList = () => {
                                     </h3>
                                     <p className="vehicle-type capitalize">{vehicle.type}</p>
                                     <p className="vehicle-price">
-                                        <span className="price">${vehicle.pricePerHour}</span>/hour
+                                        <span className="price">₹{vehicle.pricePerHour}</span>/hour
                                     </p>
                                     {vehicle.isAvailable === false && (
                                         <p className="text-red-500 text-xs mb-2 font-medium">

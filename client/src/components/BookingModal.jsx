@@ -117,7 +117,7 @@ const BookingModal = ({ vehicle, onClose }) => {
                     <>
                         <div className="modal-header">
                             <h2>Book {vehicle.make} {vehicle.model}</h2>
-                            <p className="text-gray-500">${vehicle.pricePerHour}/hour</p>
+                            <p className="text-gray-500">₹{vehicle.pricePerHour}/hour</p>
                         </div>
                         <div className="modal-body">
                             <div className="date-selection">
@@ -153,11 +153,11 @@ const BookingModal = ({ vehicle, onClose }) => {
                                 <div className="price-summary">
                                     <div className="flex justify-between">
                                         <span>Rate</span>
-                                        <span>${vehicle.pricePerHour}/hr</span>
+                                        <span>₹{vehicle.pricePerHour}/hr</span>
                                     </div>
                                     <div className="flex justify-between font-bold text-lg mt-2 pt-2 border-t">
                                         <span>Total</span>
-                                        <span>${totalPrice}</span>
+                                        <span>₹{totalPrice}</span>
                                     </div>
                                 </div>
                             )}
@@ -177,7 +177,7 @@ const BookingModal = ({ vehicle, onClose }) => {
                     <>
                         <div className="modal-header text-center border-b-0 pb-0">
                             <h2>Secure Checkout</h2>
-                            <p className="text-gray-500 text-sm">Complete your payment of <b>${totalPrice}</b></p>
+                            <p className="text-gray-500 text-sm">Complete your payment of <b>₹{totalPrice}</b></p>
                         </div>
 
                         <div className="payment-body p-6">
@@ -279,7 +279,7 @@ const BookingModal = ({ vehicle, onClose }) => {
                                     </span>
                                 ) : (
                                     <span className="flex items-center justify-center gap-2">
-                                        Pay ${totalPrice} <ShieldCheck size={18} />
+                                        Pay ₹{totalPrice} <ShieldCheck size={18} />
                                     </span>
                                 )}
                             </button>

@@ -230,7 +230,7 @@ const AdminVehicles = () => {
                                     <p>{vehicle.licensePlate}</p>
                                 </td>
                                 <td>
-                                    <p>${vehicle.pricePerHour}</p>
+                                    <p>₹{vehicle.pricePerHour}</p>
                                 </td>
                                 <td>
                                     <select
