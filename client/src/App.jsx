@@ -45,7 +45,7 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/bookings" element={<UserDashboard />} />
-            <Route path="/support" element={<Support />} />
+            {/* <Route path="/support" element={<Support />} /> */}
 
             {/* Admin Routes (Nested) */}
             <Route path="/admin" element={<AdminLayout />}>
@@ -53,7 +53,7 @@ function App() {
               <Route path="vehicles" element={<AdminVehicles />} />
               <Route path="users" element={<AdminUsers />} />
               <Route path="bookings" element={<AdminBookings />} />
-              <Route path="messages" element={<AdminChat />} />
+              {/* <Route path="messages" element={<AdminChat />} /> */}
             </Route>
 
             {/* 404 Route */}
