@@ -1,7 +1,7 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { logout, reset } from '../redux/slices/authSlice';
-import { Car, Users, Calendar, LayoutDashboard, LogOut } from 'lucide-react';
+import { Car, Users, Calendar, LayoutDashboard, LogOut, MessageSquare } from 'lucide-react';
 import './AdminSidebar.css';
 
 const AdminSidebar = () => {

@@ -81,7 +81,7 @@ exports.sendBookingConfirmation = async (user, booking, vehicle) => {
         <div style="background-color: #f3f4f6; padding: 15px; border-radius: 8px; margin: 20px 0;">
             <h3>Booking Details</h3>
             <p><strong>Vehicle:</strong> ${vehicle.make} ${vehicle.model} (${vehicle.licensePlate})</p>
-            <p><strong>Total Price:</strong> $${booking.totalPrice}</p>
+            <p><strong>Total Price:</strong> ₹${booking.totalPrice}</p>
             <p><strong>Dates:</strong> ${new Date(booking.startDate).toLocaleDateString()} - ${new Date(booking.endDate).toLocaleDateString()}</p>
         </div>
         
@@ -139,12 +139,12 @@ exports.sendPaymentReceipt = async (user, booking, vehicle, amount) => {
     const content = `
         <h2 style="color: #10B981;">Payment Successful</h2>
         <p>Hi ${user.name},</p>
-        <p>We received your payment of <strong>$${amount}</strong>.</p>
+        <p>We received your payment of <strong>₹${amount}</strong>.</p>
         
         <div style="background-color: #f3f4f6; padding: 15px; border-radius: 8px; margin: 20px 0;">
              <p><strong>Transaction ID:</strong> ${booking.transactionId || 'TXN-' + Date.now()}</p>
              <p><strong>Vehicle:</strong> ${vehicle.make} ${vehicle.model}</p>
-             <p><strong>Amount Paid:</strong> $${amount}</p>
+             <p><strong>Amount Paid:</strong> ₹${amount}</p>
         </div>
         
         <p>Thank you for choosing IntelliDrive!</p>
