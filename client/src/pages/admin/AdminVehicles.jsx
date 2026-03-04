@@ -370,7 +370,7 @@ const AdminVehicles = () => {
                                     accept="image/*"
                                 />
                                 {imageUrl && !formData.imageFile && (
-                                    <p className="text-xs text-gray-500 mt-1">Current Image: <a href={imageUrl} target="_blank" rel="noreferrer">View</a></p>
+                                    <p className="text-xs text-gray-500 mt-1">Current Image: <a href={getVehicleImageUrl(imageUrl)} target="_blank" rel="noreferrer">View</a></p>
                                 )}
                             </div>
 

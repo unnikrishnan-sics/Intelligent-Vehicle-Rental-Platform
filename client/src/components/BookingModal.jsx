@@ -174,121 +174,119 @@ const BookingModal = ({ vehicle, onClose }) => {
                 )}
 
                 {step === 2 && (
-                    <>
-                        <div className="modal-header text-center border-b-0 pb-0">
-                            <h2>Secure Checkout</h2>
-                            <p className="text-gray-500 text-sm">Complete your payment of <b>₹{totalPrice}</b></p>
+                    <div className="payment-body animate-fade-in">
+                        <div className="modal-header pt-0">
+                            <h2>Confirm & Pay</h2>
+                            <p className="text-gray-500 text-sm">Amount due: <b>₹{totalPrice}</b></p>
                         </div>
 
-                        <div className="payment-body p-6">
-                            {/* Visual Credit Card */}
-                            <div className="credit-card-mock mb-6 mx-auto transform hover:scale-105 transition-transform duration-300">
-                                <div className="card-chip mb-4"></div>
-                                <div className="card-number mb-4 text-xl tracking-widest">
-                                    {paymentData.cardNumber || '#### #### #### ####'}
-                                </div>
-                                <div className="card-details flex justify-between items-end">
-                                    <div>
-                                        <div className="text-xs opacity-75 mb-1">Card Holder</div>
-                                        <div className="uppercase font-medium tracking-wide">
-                                            {paymentData.name || 'YOUR NAME'}
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div className="text-xs opacity-75 mb-1">Expires</div>
-                                        <div className="font-medium">{paymentData.expiry || 'MM/YY'}</div>
+                        {/* Visual Credit Card */}
+                        <div className="credit-card-mock mb-8 hover:transform hover:scale-[1.02] transition-all duration-500">
+                            <div className="card-chip"></div>
+                            <div className="card-number">
+                                {paymentData.cardNumber || '•••• •••• •••• ••••'}
+                            </div>
+                            <div className="card-details">
+                                <div>
+                                    <div className="card-label">Card Holder</div>
+                                    <div className="card-value truncate max-w-[150px]">
+                                        {paymentData.name || 'Your Name'}
                                     </div>
                                 </div>
-                                {/* Decorative circle */}
-                                <div className="absolute top-4 right-4 opacity-50">
-                                    <div className="flex gap-2">
-                                        <div className="w-8 h-8 rounded-full bg-white opacity-20"></div>
-                                        <div className="w-8 h-8 rounded-full bg-white opacity-20 -ml-4"></div>
+                                <div className="text-right">
+                                    <div className="card-label">Expires</div>
+                                    <div className="card-value">{paymentData.expiry || 'MM/YY'}</div>
+                                </div>
+                            </div>
+
+                            {/* Decorative circles */}
+                            <div className="absolute top-6 right-6 flex -space-x-4 opacity-40">
+                                <div className="w-10 h-10 rounded-full bg-white/20 blur-[1px]"></div>
+                                <div className="w-10 h-10 rounded-full bg-white/20 blur-[1px]"></div>
+                            </div>
+                        </div>
+
+                        <div className="payment-form space-y-5">
+                            <div className="form-group">
+                                <label>Card Number</label>
+                                <div className="relative">
+                                    <input
+                                        type="text"
+                                        name="cardNumber"
+                                        value={paymentData.cardNumber}
+                                        onChange={handlePaymentChange}
+                                        placeholder="0000 0000 0000 0000"
+                                        className="form-control w-full pl-11"
+                                        maxLength="19"
+                                    />
+                                    <div className="absolute left-4 top-3 text-gray-400">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="payment-form space-y-4">
+                            <div className="grid grid-cols-2 gap-4">
                                 <div className="form-group">
-                                    <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Card Number</label>
-                                    <div className="relative">
-                                        <input
-                                            type="text"
-                                            name="cardNumber"
-                                            value={paymentData.cardNumber}
-                                            onChange={handlePaymentChange}
-                                            placeholder="0000 0000 0000 0000"
-                                            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                                            maxLength="19"
-                                        />
-                                        <div className="absolute left-3 top-2.5 text-gray-400">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div className="form-group">
-                                        <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Expiry Date</label>
-                                        <input
-                                            type="text"
-                                            name="expiry"
-                                            value={paymentData.expiry}
-                                            onChange={handlePaymentChange}
-                                            placeholder="MM/YY"
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                                            maxLength="5"
-                                        />
-                                    </div>
-                                    <div className="form-group">
-                                        <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">CVV</label>
-                                        <input
-                                            type="password"
-                                            name="cvv"
-                                            value={paymentData.cvv}
-                                            onChange={handlePaymentChange}
-                                            placeholder="123"
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                                            maxLength="3"
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="form-group">
-                                    <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Cardholder Name</label>
+                                    <label>Expiry Date</label>
                                     <input
                                         type="text"
-                                        name="name"
-                                        value={paymentData.name}
+                                        name="expiry"
+                                        value={paymentData.expiry}
                                         onChange={handlePaymentChange}
-                                        placeholder="Name on Card"
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                        placeholder="MM/YY"
+                                        className="form-control"
+                                        maxLength="5"
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>CVV</label>
+                                    <input
+                                        type="password"
+                                        name="cvv"
+                                        value={paymentData.cvv}
+                                        onChange={handlePaymentChange}
+                                        placeholder="•••"
+                                        className="form-control"
+                                        maxLength="3"
                                     />
                                 </div>
                             </div>
 
-                            <button
-                                className="btn btn-primary w-full mt-6 py-3 text-lg font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all"
-                                disabled={isProcessing}
-                                onClick={confirmPayment}
-                            >
-                                {isProcessing ? (
-                                    <span className="flex items-center justify-center gap-2">
-                                        <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-                                        Processing...
-                                    </span>
-                                ) : (
-                                    <span className="flex items-center justify-center gap-2">
-                                        Pay ₹{totalPrice} <ShieldCheck size={18} />
-                                    </span>
-                                )}
-                            </button>
-
-                            <p className="text-xs text-center text-gray-400 mt-4 flex items-center justify-center gap-1">
-                                <ShieldCheck size={12} /> SSL Secured Transaction
-                            </p>
+                            <div className="form-group">
+                                <label>Cardholder Name</label>
+                                <input
+                                    type="text"
+                                    name="name"
+                                    value={paymentData.name}
+                                    onChange={handlePaymentChange}
+                                    className="form-control"
+                                    placeholder="Enter full name"
+                                />
+                            </div>
                         </div>
-                    </>
+
+                        <button
+                            className="btn btn-primary w-full mt-8 py-4 rounded-xl text-lg font-bold flex items-center justify-center gap-3 transition-all hover:brightness-110 active:scale-[0.98]"
+                            disabled={isProcessing}
+                            onClick={confirmPayment}
+                        >
+                            {isProcessing ? (
+                                <>
+                                    <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                                    Securing Payment...
+                                </>
+                            ) : (
+                                <>
+                                    Pay ₹{totalPrice} <ShieldCheck size={20} />
+                                </>
+                            )}
+                        </button>
+
+                        <div className="mt-4 flex items-center justify-center gap-2 text-[10px] text-gray-400 uppercase tracking-widest font-semibold">
+                            <ShieldCheck size={14} className="text-green-500" />
+                            256-bit SSL Encrypted Payment
+                        </div>
+                    </div>
                 )}
 
                 {step === 3 && (

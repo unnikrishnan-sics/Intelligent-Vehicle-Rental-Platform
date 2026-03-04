@@ -1,146 +1,256 @@
+/* Glassmorphism Variables */
+:root {
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.3);
+    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+    --card-gradient: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+}
+
 .booking-modal {
-    max-width: 450px;
+    max-width: 480px;
+    width: 95%;
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    box-shadow: var(--glass-shadow);
     padding: 0;
-    /* overflow: hidden; Removed to allow datepicker to pop out */
+    overflow: hidden;
     position: relative;
-    /* Ensure absolute children are positioned relative to this */
-    border-radius: 1rem;
+    color: #1e293b;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .booking-modal .modal-header {
-    padding: 1.5rem;
-    background-color: #F9FAFB;
-    border-bottom: 1px solid #E5E7EB;
+    padding: 2rem 2rem 1rem;
+    background: transparent;
+    border-bottom: none;
+    text-align: center;
 }
 
 .booking-modal h2 {
-    font-size: 1.5rem;
-    margin: 0;
-}
-
-.booking-form {
-    padding: 1.5rem;
-}
-
-.form-group {
-    margin-bottom: 1.25rem;
-    display: flex;
-    flex-direction: column;
-}
-
-.form-group label {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: #374151;
+    font-size: 1.75rem;
+    font-weight: 800;
+    letter-spacing: -0.025em;
     margin-bottom: 0.5rem;
-    display: block;
+    background: linear-gradient(135deg, #1e293b 0%, #3b82f6 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
-/* Style the custom date picker within the modal to look like an input */
-.booking-modal .custom-date-input-wrapper {
-    border: 1px solid #D1D5DB;
-    border-radius: 0.5rem;
-    padding: 0.625rem 0.875rem;
-    transition: all 0.2s;
-    background-color: white;
-}
-
-.booking-modal .custom-date-input-wrapper:hover {
-    border-color: #9CA3AF;
-}
-
-.booking-modal .custom-date-input-wrapper:focus-within {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-.booking-modal .input-icon {
-    color: #6B7280;
-    margin-right: 0.5rem;
-}
-
+/* Close Button */
 .booking-modal .close-btn {
     position: absolute;
     top: 1.25rem;
     right: 1.25rem;
-    background: white;
-    border: 1px solid #E5E7EB;
-    border-radius: 50%;
-    width: 32px;
-    height: 32px;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 12px;
+    width: 36px;
+    height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    color: #6B7280;
-    z-index: 50;
+    color: #64748b;
+    z-index: 100;
     transition: all 0.2s;
-    padding: 0;
 }
 
 .booking-modal .close-btn:hover {
-    background-color: #F3F4F6;
-    color: #EF4444;
-    border-color: #EF4444;
+    background-color: #fee2e2;
+    color: #ef4444;
+    transform: rotate(90deg);
 }
 
+/* Body and Sections */
+.modal-body {
+    padding: 0 2rem 2rem;
+}
+
+.date-selection {
+    display: grid;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #475569;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Custom Date Picker Styles */
+.booking-modal .custom-date-input-wrapper {
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.booking-modal .custom-date-input-wrapper:focus-within {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+}
+
+.booking-modal .custom-date-display {
+    border: none;
+    outline: none;
+    width: 100%;
+    font-size: 0.95rem;
+    color: #1e293b;
+    font-weight: 500;
+    background: transparent;
+}
+
+/* Price Summary Card */
 .price-summary {
-    background-color: #F3F4F6;
-    padding: 1rem;
-    border-radius: var(--radius);
+    background: rgba(59, 130, 246, 0.05);
+    border: 1px dashed rgba(59, 130, 246, 0.3);
+    padding: 1.25rem;
+    border-radius: 16px;
     margin-top: 1.5rem;
 }
 
-/* Payment Mock */
-.payment-mock {
-    padding: 1.5rem;
+/* Payment Specifics */
+.payment-body {
+    padding: 1.5rem 2rem 2rem;
 }
 
 .credit-card-mock {
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    background: var(--card-gradient);
+    border-radius: 20px;
+    padding: 1.75rem;
     color: white;
-    padding: 1.5rem;
-    border-radius: 1rem;
     position: relative;
     height: 200px;
     width: 100%;
-    max-width: 340px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
     overflow: hidden;
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Glassmorphism effect overlay */
-.credit-card-mock::before {
+.credit-card-mock::after {
     content: '';
     position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 60%);
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 70% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 60%);
     pointer-events: none;
 }
 
 .card-chip {
-    width: 40px;
-    height: 30px;
-    background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
-    border-radius: 4px;
+    width: 48px;
+    height: 36px;
+    background: linear-gradient(135deg, #fcd34d 0%, #d97706 100%);
+    border-radius: 8px;
+    position: relative;
 }
 
 .card-number {
-    font-family: monospace;
-    font-size: 1.25rem;
-    letter-spacing: 2px;
+    font-family: 'Space Mono', monospace;
+    font-size: 1.4rem;
+    letter-spacing: 0.15em;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    margin: 1rem 0;
 }
 
 .card-details {
     display: flex;
     justify-content: space-between;
+    align-items: flex-end;
+}
+
+.card-label {
+    font-size: 0.65rem;
     text-transform: uppercase;
-    font-size: 0.875rem;
+    opacity: 0.7;
+    letter-spacing: 0.1em;
+    margin-bottom: 2px;
+}
+
+.card-value {
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+}
+
+/* Payment Form */
+.payment-form {
+    margin-top: 2rem;
+}
+
+.payment-form .form-control {
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    transition: all 0.3s;
+}
+
+.payment-form .form-control:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+}
+
+/* Success State Success */
+.success-icon-wrapper {
+    width: 80px;
+    height: 80px;
+    background: #dcfce7;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    color: #22c55e;
+    animation: scaleIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes scaleIn {
+    from {
+        transform: scale(0);
+    }
+
+    to {
+        transform: scale(1);
+    }
+}
+
+/* Helpers */
+.animate-fade-in {
+    animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
