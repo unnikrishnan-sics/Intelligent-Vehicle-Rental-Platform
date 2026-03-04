@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { addMessage } from '../../redux/slices/chatSlice';
+import { io } from 'socket.io-client';
 import { Send, User as UserIcon, Headset } from 'lucide-react';
 
 const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';

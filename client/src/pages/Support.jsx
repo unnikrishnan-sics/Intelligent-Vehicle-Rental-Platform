@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchMessages, clearMessages } from '../redux/slices/chatSlice';
 import { MessageCircle, ShieldCheck, Zap, HelpCircle } from 'lucide-react';
+import api from '../utils/api';
 import './Support.css';
 
 const Support = () => {
@@ -42,38 +43,10 @@ const Support = () => {
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
-                    {/* Contact Cards */}
-                    <div className="lg:col-span-1 space-y-6">
-                        <div className="support-card animate-fadeIn">
-                            <div className="card-icon bg-blue-500/20 text-blue-400">
-                                <Zap size={24} />
-                            </div>
-                            <h3>Instant Chat</h3>
-                            <p>Average response time: &lt; 2 minutes</p>
-                        </div>
-
-                        <div className="support-card animate-fadeIn" style={{ animationDelay: '0.1s' }}>
-                            <div className="card-icon bg-purple-500/20 text-purple-400">
-                                <HelpCircle size={24} />
-                            </div>
-                            <h3>FAQ Portal</h3>
-                            <p>Find quick answers in our knowledge base.</p>
-                        </div>
-
-                        <div className="support-card animate-fadeIn" style={{ animationDelay: '0.2s' }}>
-                            <div className="card-icon bg-green-500/20 text-green-400">
-                                <MessageCircle size={24} />
-                            </div>
-                            <h3>24/7 Availability</h3>
-                            <p>We're here for you anytime, day or night.</p>
-                        </div>
-                    </div>
-
-                    {/* Chat Section */}
-                    <div className="lg:col-span-2">
+                <div className="flex justify-center">
+                    <div className="w-full max-w-3xl">
                         {admin ? (
-                            <div className="chat-wrapper shadow-2xl">
+                            <div className="chat-wrapper shadow-2xl animate-fadeIn">
                                 <ChatBox
                                     receiverId={admin._id}
                                     receiverName="IntelliDrive Support"
