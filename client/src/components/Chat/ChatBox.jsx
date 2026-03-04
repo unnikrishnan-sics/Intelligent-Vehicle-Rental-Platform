@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { addMessage } from '../../redux/slices/chatSlice';
-import { io } from 'socket.io-client';
-import './ChatBox.css';
+import { Send, User as UserIcon, Headset } from 'lucide-react';
 
-const socket = io('http://localhost:5000');
+const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';
 
 const ChatBox = ({ receiverId, receiverName, room }) => {
     const [message, setMessage] = useState('');
@@ -13,21 +12,24 @@ const ChatBox = ({ receiverId, receiverName, room }) => {
     const dispatch = useDispatch();
     const messagesEndRef = useRef(null);
 
-    const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    };
+    const socketRef = useRef(null);
 
     useEffect(() => {
+        socketRef.current = io(SOCKET_URL);
+
         if (room) {
-            socket.emit('join_chat', room);
+            socketRef.current.emit('join_chat', room);
         }
 
-        socket.on('receive_message', (data) => {
+        socketRef.current.on('receive_message', (data) => {
             dispatch(addMessage(data));
         });
 
         return () => {
-            socket.off('receive_message');
+            if (socketRef.current) {
+                socketRef.current.off('receive_message');
+                socketRef.current.disconnect();
+            }
         };
     }, [room, dispatch]);
 
@@ -37,46 +39,69 @@ const ChatBox = ({ receiverId, receiverName, room }) => {
 
     const handleSendMessage = (e) => {
         e.preventDefault();
-        if (message.trim()) {
+        if (message.trim() && socketRef.current) {
             const messageData = {
                 sender: user.user._id,
                 receiver: receiverId,
                 message,
-                room
+                room,
+                timestamp: new Date().toISOString()
             };
 
-            socket.emit('send_message', messageData);
+            socketRef.current.emit('send_message', messageData);
+            // Optimistically add to local state if needed? 
+            // Better to let the server broadcast it back or handle it via receive_message
             setMessage('');
         }
     };
 
     return (
-        <div className="chat-container">
+        <div className="chat-container glass-morphism">
             <div className="chat-header">
-                <h3>Chat with {receiverName}</h3>
-            </div>
-            <div className="chat-messages">
-                {messages.map((msg, index) => (
-                    <div
-                        key={index}
-                        className={`message-bubble ${msg.sender === user.user._id ? 'sent' : 'received'}`}
-                    >
-                        <p>{msg.message}</p>
-                        <span className="timestamp">
-                            {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                        </span>
+                <div className="header-info">
+                    <div className="header-avatar">
+                        {receiverName === 'Admin' ? <Headset size={20} /> : <UserIcon size={20} />}
                     </div>
-                ))}
+                    <div>
+                        <h3>{receiverName}</h3>
+                        <span className="status-online">Online</span>
+                    </div>
+                </div>
+            </div>
+
+            <div className="chat-messages">
+                {messages.length === 0 ? (
+                    <div className="empty-messages">
+                        <p>No messages yet. Start the conversation!</p>
+                    </div>
+                ) : (
+                    messages.map((msg, index) => (
+                        <div
+                            key={index}
+                            className={`message-wrapper ${msg.sender === user.user._id ? 'sent' : 'received'}`}
+                        >
+                            <div className="message-bubble">
+                                <p>{msg.message}</p>
+                                <span className="timestamp">
+                                    {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                </span>
+                            </div>
+                        </div>
+                    ))
+                )}
                 <div ref={messagesEndRef} />
             </div>
+
             <form className="chat-input" onSubmit={handleSendMessage}>
                 <input
                     type="text"
-                    placeholder="Type a message..."
+                    placeholder="Write a message..."
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                 />
-                <button type="submit">Send</button>
+                <button type="submit" className="send-btn" disabled={!message.trim()}>
+                    <Send size={18} />
+                </button>
             </form>
         </div>
     );
