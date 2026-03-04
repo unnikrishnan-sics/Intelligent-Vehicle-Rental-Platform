@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout, reset } from '../redux/slices/authSlice';
-import { Menu, X, Car, User, LogOut, LayoutDashboard, Calendar, ChevronDown, UserCircle, Settings } from 'lucide-react';
+import { Menu, X, Car, User, LogOut, LayoutDashboard, Calendar, ChevronDown, UserCircle, Settings, Headset } from 'lucide-react';
 import './Navbar.css';
 
 const Navbar = () => {
@@ -63,7 +63,7 @@ const Navbar = () => {
                                         My Bookings
                                     </Link>
                                     <Link to="/support" className="nav-link flex items-center gap-2 hover:text-blue-600 font-medium">
-                                        <Menu size={18} />
+                                        <Headset size={18} />
                                         Support
                                     </Link>
                                 </>

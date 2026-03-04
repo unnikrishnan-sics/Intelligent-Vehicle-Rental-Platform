@@ -1,63 +1,94 @@
-.support-page {
-    background: radial-gradient(circle at top right, rgba(37, 99, 235, 0.05), transparent),
-        radial-gradient(circle at bottom left, rgba(139, 92, 246, 0.05), transparent);
-    min-height: 100vh;
+.support-full-view {
+    display: flex;
+    height: calc(100vh - 80px);
+    /* Adjust for navbar height */
+    overflow: hidden;
+    background: #0f172a;
+    width: 100%;
+}
+
+.support-sidebar-decor {
+    width: 350px;
+    background: linear-gradient(135deg, rgba(17, 25, 40, 0.8), rgba(15, 23, 42, 0.9));
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 3rem 2rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.decor-content h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    color: white;
+}
+
+.decor-content p {
+    color: #94a3b8;
+    font-size: 1rem;
+    line-height: 1.6;
 }
 
 .support-badge {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: rgba(37, 99, 235, 0.1);
+    background: rgba(37, 99, 235, 0.2);
     color: #60a5fa;
     padding: 6px 16px;
     border-radius: 100px;
-    font-size: 0.85rem;
-    font-weight: 500;
-    border: 1px solid rgba(37, 99, 235, 0.2);
+    font-size: 0.8rem;
+    font-weight: 600;
+    border: 1px solid rgba(37, 99, 235, 0.3);
 }
 
-.support-card {
-    background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 24px;
-    padding: 24px;
-    transition: all 0.3s ease;
+.features-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
 }
 
-.support-card:hover {
-    background: rgba(255, 255, 255, 0.05);
-    transform: translateY(-5px);
-    border-color: rgba(255, 255, 255, 0.1);
-}
-
-.card-icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 14px;
+.feature-item {
     display: flex;
     align-items: center;
-    justify-content: center;
-    margin-bottom: 16px;
-}
-
-.support-card h3 {
-    color: white;
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin-bottom: 8px;
-}
-
-.support-card p {
-    color: #9ca3af;
+    gap: 12px;
+    color: #e2e8f0;
     font-size: 0.9rem;
-    margin: 0;
+    font-weight: 500;
 }
 
-.chat-wrapper {
-    border-radius: 20px;
-    overflow: hidden;
+.support-chat-main {
+    flex: 1;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    background: radial-gradient(circle at center, rgba(37, 99, 235, 0.1), transparent);
+}
+
+.chat-content-wrapper {
+    height: 100%;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.chat-content-wrapper .chat-container {
+    height: 100% !important;
+}
+
+@media (max-width: 1024px) {
+    .support-sidebar-decor {
+        display: none;
+    }
+
+    .support-chat-main {
+        padding: 1rem;
+    }
+}
+
+.animate-fadeIn {
+    animation: fadeIn 0.5s ease-out;
 }
 
 @keyframes fadeIn {
@@ -70,8 +101,4 @@
         opacity: 1;
         transform: translateY(0);
     }
-}
-
-.animate-fadeIn {
-    animation: fadeIn 0.5s ease forwards;
 }

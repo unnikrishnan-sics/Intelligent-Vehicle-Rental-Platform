@@ -25,22 +25,23 @@ exports.getMessages = async (req, res) => {
 // @access  Private/Admin
 exports.getChatList = async (req, res) => {
     try {
-        // Find unique users who have sent messages to or received messages from admin
+        // Find all messages involving the current user (Admin)
         const messages = await Message.find({
             $or: [{ sender: req.user._id }, { receiver: req.user._id }]
         }).sort({ timestamp: -1 });
 
         const userIds = new Set();
         messages.forEach(msg => {
-            if (msg.sender.toString() !== req.user._id.toString()) {
-                userIds.add(msg.sender.toString());
-            }
-            if (msg.receiver.toString() !== req.user._id.toString()) {
-                userIds.add(msg.receiver.toString());
-            }
+            const otherUser = msg.sender.toString() === req.user._id.toString()
+                ? msg.receiver.toString()
+                : msg.sender.toString();
+            userIds.add(otherUser);
         });
 
-        const users = await User.find({ _id: { $in: Array.from(userIds) } }).select('name email');
+        const users = await User.find({
+            _id: { $in: Array.from(userIds) },
+            role: { $ne: 'admin' } // Only show customers/drivers to admin
+        }).select('name email');
 
         // Add last message info to each user
         const chatList = users.map(user => {
@@ -52,10 +53,13 @@ exports.getChatList = async (req, res) => {
                 _id: user._id,
                 name: user.name,
                 email: user.email,
-                lastMessage: lastMsg.message,
-                lastTimestamp: lastMsg.timestamp
+                lastMessage: lastMsg ? lastMsg.message : '',
+                lastTimestamp: lastMsg ? lastMsg.timestamp : null
             };
         });
+
+        // Sort by last message timestamp
+        chatList.sort((a, b) => new Date(b.lastTimestamp) - new Date(a.lastTimestamp));
 
         res.json(chatList);
     } catch (err) {

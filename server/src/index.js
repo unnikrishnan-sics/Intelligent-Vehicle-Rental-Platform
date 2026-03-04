@@ -67,24 +67,31 @@ io.on('connection', (socket) => {
 
     socket.on('send_message', async (data) => {
         const { sender, receiver, message, room } = data;
+        console.log(`Sending message from ${sender} to ${receiver} in room ${room}: "${message}"`);
+
         try {
             const Message = require('./models/Message');
             const newMessage = new Message({
                 sender,
                 receiver,
-                message
+                message,
+                timestamp: new Date()
             });
             await newMessage.save();
+            console.log('Message saved successfully:', newMessage._id);
 
             // Broadcast to the room
             io.to(room).emit('receive_message', {
+                _id: newMessage._id,
                 sender,
                 receiver,
                 message,
                 timestamp: newMessage.timestamp
             });
         } catch (err) {
-            console.error('Error saving message:', err.message);
+            console.error('CRITICAL: Error saving message:', err.message);
+            // Even if DB save fails, we might want to broadcast? 
+            // Usually better to ensure persistence first.
         }
     });
 

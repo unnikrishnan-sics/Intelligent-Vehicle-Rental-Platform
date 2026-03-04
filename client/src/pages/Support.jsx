@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchMessages, clearMessages } from '../redux/slices/chatSlice';
 import { MessageCircle, ShieldCheck, Zap, HelpCircle } from 'lucide-react';
+import ChatBox from '../components/Chat/ChatBox';
 import api from '../utils/api';
 import './Support.css';
 
@@ -15,52 +16,62 @@ const Support = () => {
             try {
                 const { data } = await api.get('chat/admin');
                 setAdmin(data);
-                dispatch(fetchMessages(data._id));
+                if (data?._id) {
+                    dispatch(fetchMessages(data._id));
+                }
             } catch (error) {
                 console.error("Error fetching admin info:", error);
             }
         };
 
-        if (user) {
+        if (user && !admin) {
             getAdminInfo();
         }
 
         return () => {
-            dispatch(clearMessages());
+            // Only clear if we are genuinely leaving the support page
+            // dispatch(clearMessages()); 
         };
-    }, [user, dispatch]);
+    }, [user, dispatch, admin]);
 
     return (
-        <div className="support-page py-16 px-4">
-            <div className="max-w-6xl mx-auto">
-                <div className="support-hero text-center mb-16">
-                    <div className="support-badge mb-4">
+        <div className="support-full-view">
+            <div className="support-sidebar-decor">
+                <div className="decor-content">
+                    <div className="support-badge mb-6">
                         <ShieldCheck size={16} /> Verified Support
                     </div>
-                    <h1 className="text-5xl font-extrabold text-white mb-6">How can we help you?</h1>
-                    <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-                        Our experts are here to assist you with vehicle bookings, tracking, or account queries.
-                    </p>
-                </div>
+                    <h1>Customer <br />Experience</h1>
+                    <p>Connect with our experts for instant assistance with your rentals, tracking, or account needs.</p>
 
-                <div className="flex justify-center">
-                    <div className="w-full max-w-3xl">
-                        {admin ? (
-                            <div className="chat-wrapper shadow-2xl animate-fadeIn">
-                                <ChatBox
-                                    receiverId={admin._id}
-                                    receiverName="IntelliDrive Support"
-                                    room={user.user._id}
-                                />
-                            </div>
-                        ) : (
-                            <div className="flex flex-col items-center justify-center p-20 glass-morphism rounded-3xl">
-                                <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-                                <p className="text-gray-400">Establishing secure connection...</p>
-                            </div>
-                        )}
+                    <div className="features-grid mt-12">
+                        <div className="feature-item">
+                            <Zap size={20} className="text-blue-500" />
+                            <span>Instant Reply</span>
+                        </div>
+                        <div className="feature-item">
+                            <ShieldCheck size={20} className="text-blue-500" />
+                            <span>Secure Chat</span>
+                        </div>
                     </div>
                 </div>
+            </div>
+
+            <div className="support-chat-main">
+                {admin ? (
+                    <div className="chat-content-wrapper animate-fadeIn">
+                        <ChatBox
+                            receiverId={admin._id}
+                            receiverName="IntelliDrive Support"
+                            room={user.user.id}
+                        />
+                    </div>
+                ) : (
+                    <div className="flex flex-col items-center justify-center h-full glass-morphism">
+                        <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+                        <p className="text-gray-400">Connecting to secure support line...</p>
+                    </div>
+                )}
             </div>
         </div>
     );
