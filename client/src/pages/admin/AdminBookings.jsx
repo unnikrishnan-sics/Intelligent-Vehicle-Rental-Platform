@@ -41,6 +41,13 @@ const AdminBookings = () => {
         setTargetStatus('');
     };
 
+    const getVehicleImageUrl = (imagePath) => {
+        if (!imagePath) return 'https://via.placeholder.com/300x200';
+        if (imagePath.startsWith('http')) return imagePath;
+        const baseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace('/api', '');
+        return `${baseUrl}${imagePath}`;
+    };
+
     const getStatusBadge = (status) => {
         const statusClass = `status-badge status-${status.toLowerCase()}`;
         return <span className={statusClass}>{status.charAt(0).toUpperCase() + status.slice(1)}</span>;
@@ -75,7 +82,7 @@ const AdminBookings = () => {
                                         <div className="vehicle-cell">
                                             <img
                                                 className="booking-vehicle-img"
-                                                src={booking.vehicle?.images[0]}
+                                                src={getVehicleImageUrl(booking.vehicle?.images?.[0])}
                                                 alt=""
                                             />
                                             <div className="vehicle-info">

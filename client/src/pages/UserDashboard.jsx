@@ -157,6 +157,13 @@ const UserDashboard = () => {
         .filter(b => (b.status === 'active' || b.status === 'confirmed') && b.vehicle)
         .map(b => b.vehicle);
 
+    const getVehicleImageUrl = (imagePath) => {
+        if (!imagePath) return 'https://via.placeholder.com/300x200';
+        if (imagePath.startsWith('http')) return imagePath;
+        const baseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace('/api', '');
+        return `${baseUrl}${imagePath}`;
+    };
+
     if (isLoading) {
         return (
             <div className="flex justify-center items-center h-screen bg-gray-50">
@@ -323,7 +330,7 @@ const BookingCard = ({ booking, active }) => {
                 <CardMedia
                     component="img"
                     height="160"
-                    image={booking.vehicle?.images?.[0] || 'https://via.placeholder.com/300x200'}
+                    image={getVehicleImageUrl(booking.vehicle?.images?.[0])}
                     alt={booking.vehicle?.make}
                 />
                 <Chip

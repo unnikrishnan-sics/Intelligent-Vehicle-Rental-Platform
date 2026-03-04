@@ -180,6 +180,13 @@ const AdminVehicles = () => {
         toast.success('Vehicle deleted successfully');
     };
 
+    const getVehicleImageUrl = (imagePath) => {
+        if (!imagePath) return 'https://via.placeholder.com/300x200';
+        if (imagePath.startsWith('http')) return imagePath;
+        const baseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace('/api', '');
+        return `${baseUrl}${imagePath}`;
+    };
+
     if (isLoading && !showModal) {
         return <div className="text-center mt-8">Loading...</div>;
     }
@@ -215,7 +222,7 @@ const AdminVehicles = () => {
                                 <td>
                                     <div className="flex items-center">
                                         {vehicle.images && vehicle.images.length > 0 && (
-                                            <img src={vehicle.images[0]} alt="v" style={{ width: '40px', height: '40px', borderRadius: '50%', marginRight: '1rem', objectFit: 'cover' }} />
+                                            <img src={getVehicleImageUrl(vehicle.images[0])} alt="v" style={{ width: '40px', height: '40px', borderRadius: '50%', marginRight: '1rem', objectFit: 'cover' }} />
                                         )}
                                         <div>
                                             <p className="font-bold">{vehicle.make}</p>
