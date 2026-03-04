@@ -290,7 +290,7 @@ const BookingModal = ({ vehicle, onClose }) => {
                 )}
 
                 {step === 3 && (
-                    <div className="text-center py-12 px-6">
+                    <div className="success-body text-center py-12 px-6 animate-fade-in">
                         <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
                             <CheckCircle size={40} className="text-green-500" />
                         </div>
