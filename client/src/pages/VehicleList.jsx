@@ -55,37 +55,96 @@ const VehicleList = () => {
                 {vehicles.length === 0 ? (
                     <p className="text-center text-gray-500 text-xl">No vehicles found matching your criteria.</p>
                 ) : (
-                    <div className="vehicles-grid">
-                        {vehicles.map((vehicle) => (
-                            <div key={vehicle._id} className="vehicle-card">
-                                <img
-                                    src={getVehicleImageUrl(vehicle.images[0])}
-                                    alt={`${vehicle.make} ${vehicle.model}`}
-                                    className="vehicle-image"
-                                />
-                                <div className="vehicle-details">
-                                    <h3 className="vehicle-title">
-                                        {vehicle.make} {vehicle.model}
-                                    </h3>
-                                    <p className="vehicle-type capitalize">{vehicle.type}</p>
-                                    <p className="vehicle-price">
-                                        <span className="price">₹{vehicle.pricePerHour}</span>/hour
-                                    </p>
-                                    {vehicle.isAvailable === false && (
-                                        <p className="text-red-500 text-xs mb-2 font-medium">
-                                            Currently Rented. Available from: {new Date(vehicle.nextAvailableDate).toLocaleDateString()}
+                    <>
+                        {/* Nearby Vehicles Section */}
+                        {vehicles.some(v => v.isNearby) && (
+                            <h2 className="section-subtitle my-6 text-2xl font-bold text-primary">Nearby Vehicles (Within 50km)</h2>
+                        )}
+                        <div className="vehicles-grid mb-12">
+                            {vehicles.filter(v => v.isNearby !== false).map((vehicle) => (
+                                <div key={vehicle._id} className="vehicle-card">
+                                    <img
+                                        src={getVehicleImageUrl(vehicle.images[0])}
+                                        alt={`${vehicle.make} ${vehicle.model}`}
+                                        className="vehicle-image"
+                                    />
+                                    <div className="vehicle-details">
+                                        <div className="flex justify-between items-start">
+                                            <h3 className="vehicle-title">
+                                                {vehicle.make} {vehicle.model}
+                                            </h3>
+                                            {vehicle.distanceKm && (
+                                                <span className="distance-badge text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded-full font-bold">
+                                                    {vehicle.distanceKm} km
+                                                </span>
+                                            )}
+                                        </div>
+                                        <p className="vehicle-type capitalize">{vehicle.type}</p>
+                                        <p className="vehicle-price">
+                                            <span className="price">₹{vehicle.pricePerHour}</span>/hour
                                         </p>
-                                    )}
-                                    <button
-                                        className="btn btn-primary w-full"
-                                        onClick={() => setSelectedVehicle(vehicle)}
-                                    >
-                                        {vehicle.isAvailable === false ? 'Pre-Book for Later' : 'Book Now'}
-                                    </button>
+                                        {vehicle.isAvailable === false && (
+                                            <p className="text-red-500 text-xs mb-2 font-medium">
+                                                Currently Rented. Available from: {new Date(vehicle.nextAvailableDate).toLocaleDateString()}
+                                            </p>
+                                        )}
+                                        <button
+                                            className="btn btn-primary w-full"
+                                            onClick={() => setSelectedVehicle(vehicle)}
+                                        >
+                                            {vehicle.isAvailable === false ? 'Pre-Book for Later' : 'Book Now'}
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
-                    </div>
+                            ))}
+                        </div>
+
+                        {/* Far Away Vehicles Section */}
+                        {vehicles.some(v => v.isNearby === false) && (
+                            <>
+                                <hr className="my-12 border-gray-200" />
+                                <h2 className="section-subtitle my-6 text-2xl font-bold text-gray-600">Vehicles Further Away</h2>
+                                <div className="vehicles-grid">
+                                    {vehicles.filter(v => v.isNearby === false).map((vehicle) => (
+                                        <div key={vehicle._id} className="vehicle-card">
+                                            <img
+                                                src={getVehicleImageUrl(vehicle.images[0])}
+                                                alt={`${vehicle.make} ${vehicle.model}`}
+                                                className="vehicle-image"
+                                            />
+                                            <div className="vehicle-details">
+                                                <div className="flex justify-between items-start">
+                                                    <h3 className="vehicle-title">
+                                                        {vehicle.make} {vehicle.model}
+                                                    </h3>
+                                                    {vehicle.distanceKm && (
+                                                        <span className="distance-badge text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full font-bold">
+                                                            {vehicle.distanceKm} km
+                                                        </span>
+                                                    )}
+                                                </div>
+                                                <p className="vehicle-type capitalize">{vehicle.type}</p>
+                                                <p className="vehicle-price">
+                                                    <span className="price">₹{vehicle.pricePerHour}</span>/hour
+                                                </p>
+                                                {vehicle.isAvailable === false && (
+                                                    <p className="text-red-500 text-xs mb-2 font-medium">
+                                                        Currently Rented. Available from: {new Date(vehicle.nextAvailableDate).toLocaleDateString()}
+                                                    </p>
+                                                )}
+                                                <button
+                                                    className="btn btn-primary w-full"
+                                                    onClick={() => setSelectedVehicle(vehicle)}
+                                                >
+                                                    {vehicle.isAvailable === false ? 'Pre-Book for Later' : 'Book Now'}
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </>
+                        )}
+                    </>
                 )}
             </div>
 

@@ -26,7 +26,7 @@ exports.createBooking = async (req, res) => {
             startDate,
             endDate,
             totalPrice,
-            status: 'active', // Auto-activate for immediate tracking demo
+            status: 'pending', // Awaiting Admin Approval
             paymentStatus: 'paid' // Simulating payment
         });
 
@@ -35,12 +35,9 @@ exports.createBooking = async (req, res) => {
         const vehicle = await Vehicle.findById(vehicleId);
 
         // Send Confirmation & Receipt Emails (Async - don't block response)
+        // Note: sendBookingConfirmation template already says "We have received your booking request. Our team is reviewing it now."
         sendBookingConfirmation(user, booking, vehicle).catch(err => console.error("Confirmation Email Failed:", err));
         sendPaymentReceipt(user, booking, vehicle, totalPrice).catch(err => console.error("Receipt Email Failed:", err));
-
-        // Update vehicle status to rented? 
-        // Usually we check availability by dates, but for simplicity let's mark it 'rented' if it's a current booking
-        // For now, allow multiple bookings but maybe warn if overlapping (Future feature)
 
         res.status(201).json(booking);
     } catch (err) {

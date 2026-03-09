@@ -11,30 +11,38 @@ const Booking = require('../models/Booking');
 exports.getVehicles = async (req, res) => {
     try {
         const { lat, lng, radius, startDate, endDate } = req.query;
-        let query = {};
+        let pipeline = [];
 
         if (lat && lng) {
-            query.currentLocation = {
-                $near: {
-                    $geometry: {
+            pipeline.push({
+                $geoNear: {
+                    near: {
                         type: 'Point',
                         coordinates: [parseFloat(lng), parseFloat(lat)]
                     },
-                    $maxDistance: (parseInt(radius) || 50) * 1000 // default 50km
+                    distanceField: 'distance',
+                    spherical: true,
+                    // If radius is provided, we can still filter, but the prompt says 
+                    // "Show nearby first... then far away", which implies showing all.
+                    // We'll use radius * 1000 if provided, otherwise no limit to show all.
+                    maxDistance: radius ? parseInt(radius) * 1000 : 20000000 // default to very large if not filtering
                 }
-            };
+            });
+            // Add a flag for nearby (within 50km)
+            pipeline.push({
+                $addFields: {
+                    isNearby: { $lte: ["$distance", 50000] }
+                }
+            });
+            // Sort by isNearby desc (true first), then by distance asc
+            pipeline.push({
+                $sort: { isNearby: -1, distance: 1 }
+            });
         }
 
-        let vehicles = await Vehicle.find(query).lean(); // Use lean() for better performance and to allow appending properties
-
-        // Check availability for each vehicle
-        // If the user requested specific dates, filter out unavailable ones
-        // If not, just mark them as unavailable IF they are currently rented
+        let vehicles = await Vehicle.aggregate(pipeline.length > 0 ? pipeline : [{ $match: {} }]);
 
         const now = new Date();
-
-        // Fetch active bookings for these vehicles that overlap with now or the requested range
-        // For simple "currently available" check:
         const vehicleIds = vehicles.map(v => v._id);
 
         const activeBookings = await Booking.find({
@@ -43,24 +51,16 @@ exports.getVehicles = async (req, res) => {
             endDate: { $gte: now }
         });
 
-        // Map bookings to vehicles
         const vehiclesWithRenter = await Promise.all(vehicles.map(async (vehicle) => {
             const vehicleBookings = activeBookings.filter(b => b.vehicle.toString() === vehicle._id.toString());
-
-            // Find if there is a booking intersecting with NOW
             const currentBooking = vehicleBookings.find(b => b.startDate <= now && b.endDate >= now);
 
             if (currentBooking) {
-                // Populate user details for this booking if not already populated
-                // Since we did find() above, we might need to populate user manually or do a separate query
-                // Optimization: We can just use the user ID from booking if not populated, 
-                // but we need the NAME.
-                // Let's fetch the user name for this specific booking
                 const BookingModel = require('../models/Booking');
                 const fullBooking = await BookingModel.findById(currentBooking._id).populate('user', 'name');
 
                 const nextAvailable = new Date(currentBooking.endDate);
-                nextAvailable.setHours(nextAvailable.getHours() + 10); // +10 hours for cleaning
+                nextAvailable.setHours(nextAvailable.getHours() + 10);
 
                 return {
                     ...vehicle,
@@ -68,15 +68,14 @@ exports.getVehicles = async (req, res) => {
                     nextAvailableDate: nextAvailable,
                     status: 'rented',
                     currentRenter: fullBooking?.user?.name || 'Unknown',
-                    licensePlate: vehicle.licensePlate
+                    distanceKm: (vehicle.distance !== undefined && vehicle.distance !== null) ? (vehicle.distance / 1000).toFixed(1) : null
                 };
             }
 
-            // If not rented, respect the DB status (available, maintenance, cleaning)
             return {
                 ...vehicle,
                 isAvailable: vehicle.status === 'available',
-                licensePlate: vehicle.licensePlate
+                distanceKm: (vehicle.distance !== undefined && vehicle.distance !== null) ? (vehicle.distance / 1000).toFixed(1) : null
             };
         }));
 

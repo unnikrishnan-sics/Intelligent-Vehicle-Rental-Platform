@@ -111,6 +111,16 @@ const AdminBookings = () => {
                                     </td>
                                     <td>
                                         <div className="action-buttons">
+                                            {booking.status === 'pending' && (
+                                                <button
+                                                    onClick={() => handleStatusUpdateClick(booking._id, 'confirmed')}
+                                                    className="action-btn btn-complete"
+                                                    style={{ backgroundColor: '#10B981', color: 'white' }}
+                                                    title="Approve Booking"
+                                                >
+                                                    <Check size={16} />
+                                                </button>
+                                            )}
                                             {booking.status === 'confirmed' && (
                                                 <button
                                                     onClick={() => handleStatusUpdateClick(booking._id, 'active')}
@@ -133,7 +143,7 @@ const AdminBookings = () => {
                                                 <button
                                                     onClick={() => handleStatusUpdateClick(booking._id, 'cancelled')}
                                                     className="action-btn btn-cancel"
-                                                    title="Cancel Booking"
+                                                    title={booking.status === 'pending' ? "Reject Booking" : "Cancel Booking"}
                                                 >
                                                     <X size={16} />
                                                 </button>
